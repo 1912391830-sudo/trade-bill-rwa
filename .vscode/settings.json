@@ -1,5 +1,8 @@
 {
-    "git.ignoreLimitWarning": true,
-    "liveServer.settings.multiRootWorkspaceName": "rwa-trade-system",
-    "liveServer.settings.port": 5501
+  "files.associations": {
+    "*.html": "html"
+  },
+  "liveServer.settings.root": "/",
+  "liveServer.settings.defaultFile": "index.html",
+  "liveServer.settings.port": 5501
 }
