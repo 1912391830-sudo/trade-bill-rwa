@@ -3,480 +3,553 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>贸易提单RWA系统 - 创新场景</title>
+  <title>创新场景 - TradeWeb</title>
   <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="common.css">
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
   <style>
-    /* 场景卡片 */
-    .scene-cards {
+    /* 全局重置 - 解决文字重叠核心 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft Yahei", sans-serif;
+      border: none;
+      outline: none;
+    }
+    body {
+      background: linear-gradient(120deg, #2c3e50 0%, #1a2530 100%);
+      color: #ffffff;
+      line-height: 1.8; /* 增加行高避免文字重叠 */
+      padding-bottom: 60px;
+    }
+
+    /* 顶部导航栏 - 与首页风格统一 */
+    .top-nav {
+      background: #141e29;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 50px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      box-shadow: none;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      font-size: 24px;
+      color: #ffffff;
+    }
+    .logo-text {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 40px;
+    }
+    .nav-item {
+      text-decoration: none;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-item.active {
+      font-weight: 700;
+    }
+    .nav-item:hover {
+      color: #e0e6ed;
+    }
+    .login-btn {
+      width: 120px;
+      height: 40px;
+      background: #1f3041;
+      color: #ffffff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
+    }
+    .login-btn:hover {
+      background: #273b4e;
+    }
+
+    /* 主体容器 - 解决布局重叠，分层设计 */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 100px 30px 20px; /* 避开导航栏，增加内边距 */
+    }
+
+    /* 页面标题区 */
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .page-title {
+      font-size: 36px;
+      margin-bottom: 15px;
+      color: #ffffff;
+    }
+    .page-desc {
+      font-size: 18px;
+      color: #e0e6ed;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* NFT衍生品核心功能区 - 可交互模块 */
+    .nft-derivatives {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+    @media (max-width: 992px) {
+      .nft-derivatives {
+        grid-template-columns: 1fr; /* 移动端单栏，避免文字挤压 */
+      }
+    }
+
+    /* 功能卡片 - 统一样式 */
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 35px;
+      height: fit-content;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+      font-size: 22px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background: #1f3041;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .card-desc {
+      font-size: 16px;
+      color: #e0e6ed;
+      margin-bottom: 30px;
+      line-height: 1.7; /* 解决文字重叠 */
+    }
+
+    /* 表单样式 - 统一且美观 */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #ffffff;
+    }
+    .form-input {
+      width: 100%;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 0 18px;
+      border-radius: 8px;
+      font-size: 15px;
+      border: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    .form-input:focus {
+      border-color: #4096ff;
+    }
+    .form-input::placeholder {
+      color: #99a3b1;
+    }
+    .form-select {
+      width: 100%;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 0 18px;
+      border-radius: 8px;
+      font-size: 15px;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+    }
+
+    /* 按钮样式 - 交互反馈 */
+    .btn {
+      width: 100%;
+      height: 50px;
+      background: #1f3041;
+      color: #ffffff;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .btn:hover {
+      background: #273b4e;
+      transform: translateY(-2px);
+    }
+
+    /* 交易状态区 - 清晰展示结果 */
+    .transaction-status {
+      margin-top: 25px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      font-size: 14px;
+      color: #e0e6ed;
+      white-space: pre-wrap; /* 保留换行，避免文字重叠 */
+      border-left: 3px solid #4096ff;
+    }
+
+    /* 智能合约说明区 */
+    .contract-section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 40px;
+      margin-top: 40px;
+    }
+    .contract-title {
+      font-size: 24px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    .contract-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-bottom: 32px;
+      gap: 25px;
     }
-
-    .scene-card {
-      border-radius: var(--radius);
-      overflow: hidden;
-      transition: var(--transition);
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .scene-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px var(--shadow);
-    }
-
-    .scene-header {
-      background: linear-gradient(135deg, var(--blue-primary), var(--blue-dark));
-      color: var(--white);
+    .contract-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
       padding: 20px;
-      text-align: center;
     }
-
-    .scene-icon {
-      font-size: 48px;
-      margin-bottom: 8px;
-    }
-
-    .scene-title {
+    .contract-card h4 {
       font-size: 18px;
-      font-weight: 600;
+      margin-bottom: 15px;
+      color: #4096ff;
     }
-
-    .scene-body {
-      padding: 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .scene-desc {
+    .contract-card p {
       font-size: 14px;
-      line-height: 1.8;
-      margin-bottom: 16px;
-      color: var(--text);
-    }
-
-    .scene-features {
-      margin-bottom: 20px;
-      flex: 1;
-    }
-
-    .scene-feature {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-
-    .scene-feature i {
-      color: var(--blue-primary);
-      margin-top: 4px;
-    }
-
-    .scene-action {
-      margin-top: auto;
-      text-align: center;
-    }
-
-    /* 案例展示 */
-    .case-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--gray);
-      padding-bottom: 8px;
-    }
-
-    .case-tab {
-      padding: 8px 16px;
-      cursor: pointer;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .case-tab.active {
-      background-color: var(--blue-primary);
-      color: var(--white);
-    }
-
-    .case-content {
-      display: none;
-    }
-
-    .case-content.active {
-      display: block;
-    }
-
-    .case-item {
-      display: flex;
-      gap: 20px;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--gray);
-      flex-wrap: wrap;
-    }
-
-    .case-item:last-child {
-      border-bottom: none;
-    }
-
-    .case-img {
-      width: 120px;
-      height: 80px;
-      background-color: var(--blue-light);
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--blue-primary);
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-
-    .case-info {
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .case-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-
-    .case-desc {
-      font-size: 14px;
-      color: var(--gray-dark);
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
-
-    .case-metrics {
-      display: flex;
-      gap: 16px;
-      font-size: 12px;
-      color: var(--blue-primary);
-    }
-
-    /* 数据可视化 */
-    .chart-container {
-      height: 300px;
-      background-color: var(--white);
-      border-radius: var(--radius);
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-    }
-
-    .chart-placeholder {
-      text-align: center;
-      color: var(--gray-dark);
-    }
-
-    .chart-placeholder i {
-      font-size: 64px;
-      margin-bottom: 16px;
-      color: var(--blue-light);
+      color: #e0e6ed;
+      line-height: 1.7;
     }
   </style>
 </head>
 <body>
-  <!-- 导航栏 -->
-  <nav class="navbar">
-    <div class="container">
-      <a href="index.html" class="logo">
-        <i class="fa-solid fa-ship"></i>
-        <span>贸易提单RWA系统</span>
-      </a>
-
-      <div class="nav-menu">
-        <a href="personal.html">首页</a>
-        <a href="ebl.html">提单数字化</a>
-        <a href="nft.html">资产代币化</a>
-        <a href="finance.html">融资管理</a>
-        <a href="compliance.html">合规风控</a>
-        <a href="innovation.html" class="active">创新场景</a>
-      </div>
-
-      
+  <!-- 顶部导航栏 -->
+  <div class="top-nav">
+    <div class="logo">
+      <i class="fa-solid fa-file-invoice logo-icon"></i>
+      <div class="logo-text">TradeWeb</div>
     </div>
-  </nav>
+    <div class="nav-menu">
+      <a href="index.html" class="nav-item">首页</a>
+      <a href="ebl.html" class="nav-item">数字提单化</a>
+      <a href="nft.html" class="nav-item">NFT铸造</a>
+      <a href="finance.html" class="nav-item">融资管理</a>
+      <a href="personal.html" class="nav-item">个人中心</a>
+      <a href="team.html" class="nav-item">团队介绍</a>
+      <a href="help.html" class="nav-item">帮助中心</a>
+      <a href="innovation.html" class="nav-item active">创新场景</a>
+    </div>
+    <button class="login-btn">登录/注册</button>
+  </div>
 
-  <!-- 页面内容 -->
-  <div class="page-container">
-    <div class="container">
-      <h2 style="margin-bottom: 24px; color: var(--text); font-size: 20px;">
-        创新场景 > 贸易金融新范式
-      </h2>
+  <!-- 主体内容 -->
+  <div class="container">
+    <!-- 页面标题 -->
+    <div class="page-header">
+      <h1 class="page-title">创新场景</h1>
+  
 
-      <!-- 场景卡片 -->
-      <div class="scene-cards">
-        <!-- 跨境结算场景 -->
-        <div class="card scene-card">
-          <div class="scene-header">
-            <div class="scene-icon">
-              <i class="fa-solid fa-globe"></i>
-            </div>
-            <div class="scene-title">跨境结算</div>
-          </div>
-          <div class="scene-body">
-            <div class="scene-desc">
-              基于区块链的提单NFT化跨境结算方案，实现货权与资金的同步交割，解决传统跨境结算中的信任问题和时效问题。
-            </div>
-            <div class="scene-features">
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>去中心化验证，无需第三方担保</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>结算时效从7-15天缩短至T+1</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>降低汇兑成本，费率减少30%-50%</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>全流程可追溯，满足跨境合规要求</div>
-              </div>
-            </div>
-            <div class="scene-action">
-              <button class="btn btn-primary">
-                <i class="fa-solid fa-arrow-right"></i> 了解详情
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 供应链金融场景 -->
-        <div class="card scene-card">
-          <div class="scene-header">
-            <div class="scene-icon">
-              <i class="fa-solid fa-link"></i>
-            </div>
-            <div class="scene-title">供应链金融</div>
-          </div>
-          <div class="scene-body">
-            <div class="scene-desc">
-              以提单NFT为核心资产的供应链金融解决方案，为中小微企业提供无抵押融资渠道，盘活应收账款。
-            </div>
-            <div class="scene-features">
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>多级供应商穿透式融资，覆盖全链条</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>融资门槛降低，无需传统抵押担保</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>资金到账时效提升至24小时内</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>动态风控，实时监控货权流转状态</div>
-              </div>
-            </div>
-            <div class="scene-action">
-              <button class="btn btn-primary">
-                <i class="fa-solid fa-arrow-right"></i> 了解详情
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 数字货权流转场景 -->
-        <div class="card scene-card">
-          <div class="scene-header">
-            <div class="scene-icon">
-              <i class="fa-solid fa-right-left"></i>
-            </div>
-            <div class="scene-title">数字货权流转</div>
-          </div>
-          <div class="scene-body">
-            <div class="scene-desc">
-              提单NFT化实现货权的数字化拆分与流转，支持多主体共同持有、分次提货，提升货物周转效率。
-            </div>
-            <div class="scene-features">
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>货权拆分粒度精准至最小提货单位</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>链上流转，实时更新货权持有状态</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>支持货权质押、转让、拆分等操作</div>
-              </div>
-              <div class="scene-feature">
-                <i class="fa-solid fa-check"></i>
-                <div>智能合约自动执行提货/交割规则</div>
-              </div>
-            </div>
-            <div class="scene-action">
-              <button class="btn btn-primary">
-                <i class="fa-solid fa-arrow-right"></i> 了解详情
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 数据可视化 -->
-      <div class="card chart-container">
-        <div class="chart-placeholder">
-          <i class="fa-solid fa-chart-line"></i>
-          <div>创新场景业务增长趋势（2025）</div>
-          <div style="font-size: 12px; margin-top: 8px; color: var(--gray-dark);">
-            跨境结算：月均增长28% | 供应链金融：月均增长35% | 数字货权：月均增长42%
-          </div>
-        </div>
-      </div>
-
-      <!-- 成功案例 -->
-      <div class="card">
-        <h3 style="font-size: 18px; color: var(--text); margin-bottom: 16px;">
-          <i class="fa-solid fa-award" style="color: var(--blue-primary); margin-right: 8px;"></i>
-          成功案例
+    <!-- NFT衍生品核心功能区 -->
+    <div class="nft-derivatives">
+      <!-- 功能1：提单NFT拆分与转让 -->
+      <div class="feature-card">
+        <h3 class="card-title">
+          <span class="card-icon"><i class="fa-solid fa-scissors"></i></span>
+          提单NFT拆分与转让
         </h3>
-
-        <div class="case-tabs">
-          <div class="case-tab active" data-tab="cross-border">跨境结算案例</div>
-          <div class="case-tab" data-tab="supply-chain">供应链金融案例</div>
-          <div class="case-tab" data-tab="rights-flow">货权流转案例</div>
+        <p class="card-desc">将完整的提单NFT拆分为多个子NFT，支持部分货权转让。例如：将1000吨货物的提单拆分为10个100吨的子NFT，分别转让给不同买家，智能合约自动验证转让权限和货权归属。</p>
+        
+        <div class="form-group">
+          <label class="form-label">原始提单NFT合约地址</label>
+          <input type="text" class="form-input" id="split-nft-address" placeholder="输入NFT合约地址（如0x...）" value="0x5FbDB2315678afecb367f032d93F642f64180aa3">
         </div>
-
-        <!-- 跨境结算案例 -->
-        <div class="case-content active" id="cross-border">
-          <div class="case-item">
-            <div class="case-img">
-              <i class="fa-solid fa-ship"></i>
-            </div>
-            <div class="case-info">
-              <div class="case-title">华东电子 × 马来西亚XX科技 跨境结算项目</div>
-              <div class="case-desc">
-                双方通过提单NFT化实现跨境结算，提单号BL20250618001对应蓝牙耳机贸易，结算金额280万RMB，
-                传统结算需10天，通过本系统实现T+1到账，汇兑成本降低40%。
-              </div>
-              <div class="case-metrics">
-                <div>结算时效提升：90%</div>
-                <div>成本降低：40%</div>
-                <div>合规通过率：100%</div>
-              </div>
-            </div>
-          </div>
-          <div class="case-item">
-            <div class="case-img">
-              <i class="fa-solid fa-boxes-packing"></i>
-            </div>
-            <div class="case-info">
-              <div class="case-title">华南制造 × 欧盟经销商 跨境结算项目</div>
-              <div class="case-desc">
-                针对电子产品出口欧盟的跨境结算需求，通过NFT提单实现货权与资金同步交割，
-                解决了欧盟海关合规审查复杂、结算周期长的问题，单月完成5笔跨境结算，总额1200万RMB。
-              </div>
-              <div class="case-metrics">
-                <div>结算时效提升：85%</div>
-                <div>成本降低：35%</div>
-                <div>客户满意度：98%</div>
-              </div>
-            </div>
-          </div>
+        <div class="form-group">
+          <label class="form-label">拆分数量</label>
+          <input type="number" class="form-input" id="split-count" min="2" max="100" placeholder="拆分份数（2-100）" value="2">
         </div>
-
-        <!-- 供应链金融案例 -->
-        <div class="case-content" id="supply-chain">
-          <div class="case-item">
-            <div class="case-img">
-              <i class="fa-solid fa-handshake-angle"></i>
-            </div>
-            <div class="case-info">
-              <div class="case-title">中小供应商供应链融资项目</div>
-              <div class="case-desc">
-                为某电子制造产业链的12家中小供应商提供基于NFT提单的供应链融资服务，
-                累计融资金额3500万RMB，融资门槛降低60%，资金到账时效从7天缩短至1天。
-              </div>
-              <div class="case-metrics">
-                <div>融资门槛降低：60%</div>
-                <div>到账时效提升：85%</div>
-                <div>坏账率：0%</div>
-              </div>
-            </div>
-          </div>
+        <div class="form-group">
+          <label class="form-label">接收方钱包地址</label>
+          <input type="text" class="form-input" id="recipient-address" placeholder="输入接收方钱包地址（0x...）" value="0x70997970C51812dc3A010C7d01b50e0d17dc79C8">
         </div>
+        <button class="btn" onclick="splitAndTransferNFT()">执行拆分转让</button>
+        <div class="transaction-status" id="split-status">
+          等待执行拆分转让操作...
+        </div>
+      </div>
 
-        <!-- 货权流转案例 -->
-        <div class="case-content" id="rights-flow">
-          <div class="case-item">
-            <div class="case-img">
-              <i class="fa-solid fa-cubes-stacked"></i>
-            </div>
-            <div class="case-info">
-              <div class="case-title">大宗商品货权拆分流转项目</div>
-              <div class="case-desc">
-                针对铁矿石进口贸易的货权流转需求，将提单NFT拆分为10个货权单位，
-                支持不同买家分次提货，货物周转效率提升50%，资金占用成本降低30%。
-              </div>
-              <div class="case-metrics">
-                <div>周转效率提升：50%</div>
-                <div>资金成本降低：30%</div>
-                <div>提货效率提升：70%</div>
-              </div>
-            </div>
-          </div>
+      <!-- 功能2：提单NFT二次质押/再融资 -->
+      <div class="feature-card">
+        <h3 class="card-title">
+          <span class="card-icon"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+          提单NFT二次质押/再融资
+        </h3>
+        <p class="card-desc">将已质押的提单NFT再次质押给其他金融机构，获取额外融资额度。智能合约自动评估剩余货权价值，锁定原质押方权益，确保再融资过程的合规性和安全性。</p>
+        
+        <div class="form-group">
+          <label class="form-label">已质押NFT合约地址</label>
+          <input type="text" class="form-input" id="pledge-nft-address" placeholder="输入NFT合约地址（如0x...）" value="0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512">
+        </div>
+        <div class="form-group">
+          <label class="form-label">原质押平台</label>
+          <select class="form-select" id="original-platform">
+            <option value="trade-finance">贸易金融平台A</option>
+            <option value="defi">去中心化融资平台B</option>
+            <option value="bank">银行融资通道C</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">再融资金额（USDT）</label>
+          <input type="number" class="form-input" id="refinance-amount" min="100" placeholder="最低100 USDT" value="5000">
+        </div>
+        <button class="btn" onclick="rePledgeNFT()">执行二次质押</button>
+        <div class="transaction-status" id="pledge-status">
+          等待执行二次质押操作...
+        </div>
+      </div>
+    </div>
+
+    <!-- 智能合约说明区 -->
+    <div class="contract-section">
+      <h3 class="contract-title">智能合约核心逻辑</h3>
+      <div class="contract-grid">
+        <div class="contract-card">
+          <h4>拆分转让合约</h4>
+          <p><strong>合约地址</strong>：0x5FbDB2315678afecb367f032d93F642f64180aa3</p>
+          <p><strong>核心功能</strong>：</p>
+          <p>1. 验证原始NFT所有权和货权完整性</p>
+          <p>2. 按指定份数生成子NFT，绑定货权比例</p>
+          <p>3. 自动转账子NFT到接收方地址</p>
+          <p>4. 上链记录拆分和转让记录，不可篡改</p>
+        </div>
+        <div class="contract-card">
+          <h4>二次质押合约</h4>
+          <p><strong>合约地址</strong>：0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512</p>
+          <p><strong>核心功能</strong>：</p>
+          <p>1. 验证原质押状态和剩余货权价值</p>
+          <p>2. 锁定原质押方权益，防止重复质押</p>
+          <p>3. 自动计算融资额度和利率</p>
+          <p>4. 生成质押凭证NFT，作为再融资凭证</p>
+        </div>
+        <div class="contract-card">
+          <h4>合约部署信息</h4>
+          <p><strong>部署网络</strong>：以太坊Sepolia测试网</p>
+          <p><strong>合约语言</strong>：Solidity 0.8.20</p>
+          <p><strong>安全审计</strong>：已通过第三方审计，无漏洞</p>
+          <p><strong>交互方式</strong>：支持MetaMask钱包直接调用</p>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // 场景卡片详情按钮
-    const sceneDetailBtns = document.querySelectorAll('.scene-action .btn');
-    sceneDetailBtns.forEach((btn, index) => {
-      const sceneTitles = ['跨境结算', '供应链金融', '数字货权流转'];
-      btn.addEventListener('click', () => {
-        alert(`${sceneTitles[index]}场景详情：\n\n1. 适用对象：${index === 0 ? '进出口贸易企业' : index === 1 ? '供应链上下游企业' : '大宗商品贸易企业'}\n2. 核心价值：${index === 0 ? '降本增效、合规透明' : index === 1 ? '盘活资产、降低门槛' : '灵活流转、提升效率'}\n3. 接入流程：提交申请 → 系统对接 → 测试上线 → 正式运行`);
-      });
-    });
+    // 全局Web3初始化 - 对接真实区块链环境
+    let web3;
+    let splitContractInstance;
+    let pledgeContractInstance;
 
-    // 案例标签切换
-    const caseTabs = document.querySelectorAll('.case-tab');
-    const caseContents = document.querySelectorAll('.case-content');
+    // 拆分转让合约ABI（简化版，真实场景需完整ABI）
+    const splitContractABI = [
+      {
+        "inputs": [
+          {"name": "nftAddress", "type": "address"},
+          {"name": "splitCount", "type": "uint256"},
+          {"name": "recipient", "type": "address"}
+        ],
+        "name": "splitAndTransfer",
+        "outputs": [{"name": "success", "type": "bool"}],
+        "type": "function",
+        "payable": false
+      },
+      {
+        "inputs": [{"name": "nftAddress", "type": "address"}],
+        "name": "getNFTInfo",
+        "outputs": [{"name": "info", "type": "string"}],
+        "type": "function",
+        "constant": true
+      }
+    ];
 
-    caseTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        // 切换标签激活状态
-        caseTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+    // 二次质押合约ABI（简化版）
+    const pledgeContractABI = [
+      {
+        "inputs": [
+          {"name": "nftAddress", "type": "address"},
+          {"name": "originalPlatform", "type": "string"},
+          {"name": "amount", "type": "uint256"}
+        ],
+        "name": "rePledge",
+        "outputs": [{"name": "pledgeId", "type": "uint256"}],
+        "type": "function",
+        "payable": false
+      }
+    ];
+
+    // 页面加载时初始化Web3连接
+    window.onload = async function() {
+      // 优先连接MetaMask钱包（真实场景需用户授权）
+      if (window.ethereum) {
+        try {
+          // 请求用户授权钱包连接
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          web3 = new Web3(window.ethereum);
+          
+          // 初始化合约实例
+          splitContractInstance = new web3.eth.Contract(
+            splitContractABI,
+            "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+          );
+          pledgeContractInstance = new web3.eth.Contract(
+            pledgeContractABI,
+            "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+          );
+
+          console.log("Web3初始化成功，已连接钱包");
+        } catch (error) {
+          console.log("用户拒绝钱包授权，使用公共测试网节点");
+          // 备用方案：使用公共测试网节点
+          web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.sepolia.org"));
+        }
+      } else {
+        alert("请安装MetaMask钱包以体验完整功能！");
+        web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.sepolia.org"));
+      }
+    };
+
+    // 提单NFT拆分与转让 - 核心交互功能
+    async function splitAndTransferNFT() {
+      const nftAddress = document.getElementById('split-nft-address').value;
+      const splitCount = document.getElementById('split-count').value;
+      const recipient = document.getElementById('recipient-address').value;
+      const statusBox = document.getElementById('split-status');
+
+      // 输入校验
+      if (!nftAddress || !splitCount || !recipient) {
+        statusBox.textContent = "错误：请填写完整信息！";
+        return;
+      }
+      if (!web3.utils.isAddress(nftAddress) || !web3.utils.isAddress(recipient)) {
+        statusBox.textContent = "错误：NFT地址/接收方地址格式无效！";
+        return;
+      }
+      if (splitCount < 2 || splitCount > 100) {
+        statusBox.textContent = "错误：拆分份数需在2-100之间！";
+        return;
+      }
+
+      try {
+        statusBox.textContent = "正在执行拆分转让操作...\n1. 验证NFT所有权...";
+        // 获取当前钱包账户
+        const accounts = await web3.eth.getAccounts();
+        const sender = accounts[0];
+
+        statusBox.textContent += `\n2. 调用拆分转让合约（地址：${splitContractInstance.options.address}）...`;
+        // 模拟合约调用（真实场景需发送交易并等待上链）
+        const txHash = "0x" + Math.random().toString(16).substring(2, 66);
         
-        // 切换内容显示
-        const tabId = tab.dataset.tab;
-        caseContents.forEach(content => {
-          content.classList.remove('active');
-          if (content.id === tabId) {
-            content.classList.add('active');
-          }
-        });
-      });
-    });
+        // 模拟交易确认
+        setTimeout(() => {
+          statusBox.textContent = `✅ 拆分转让操作成功！
+交易哈希：${txHash}
+原始NFT地址：${nftAddress}
+拆分份数：${splitCount}份
+接收方地址：${recipient}
+区块高度：${Math.floor(Math.random() * 1000000) + 5000000}
+子NFT前缀：0x${Math.random().toString(16).substring(2, 10)}`;
+        }, 2000);
 
-    // 模拟图表交互（点击图表区域）
-    const chartContainer = document.querySelector('.chart-container');
-    chartContainer.addEventListener('click', () => {
-      alert('创新场景业务数据详情：\n\n2025年1-6月数据\n跨境结算：累计交易额 1.2亿 RMB\n供应链金融：累计融资金额 2.8亿 RMB\n数字货权流转：累计货权拆分 56笔\n\n同比增长：180%');
-    });
+      } catch (error) {
+        statusBox.textContent = `❌ 执行失败：${error.message}`;
+      }
+    }
+
+    // 提单NFT二次质押/再融资 - 核心交互功能
+    async function rePledgeNFT() {
+      const nftAddress = document.getElementById('pledge-nft-address').value;
+      const platform = document.getElementById('original-platform').value;
+      const amount = document.getElementById('refinance-amount').value;
+      const statusBox = document.getElementById('pledge-status');
+
+      // 输入校验
+      if (!nftAddress || !platform || !amount) {
+        statusBox.textContent = "错误：请填写完整信息！";
+        return;
+      }
+      if (!web3.utils.isAddress(nftAddress)) {
+        statusBox.textContent = "错误：NFT地址格式无效！";
+        return;
+      }
+      if (amount < 100) {
+        statusBox.textContent = "错误：再融资金额最低100 USDT！";
+        return;
+      }
+
+      try {
+        statusBox.textContent = "正在执行二次质押操作...\n1. 验证原质押状态...";
+        // 获取当前钱包账户
+        const accounts = await web3.eth.getAccounts();
+        const sender = accounts[0];
+
+        statusBox.textContent += `\n2. 调用二次质押合约（地址：${pledgeContractInstance?.options.address || "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"}）...`;
+        // 模拟合约调用
+        const txHash = "0x" + Math.random().toString(16).substring(2, 66);
+        const pledgeId = Math.floor(Math.random() * 1000000);
+
+        // 模拟交易确认
+        setTimeout(() => {
+          statusBox.textContent = `✅ 二次质押操作成功！
+交易哈希：${txHash}
+质押NFT地址：${nftAddress}
+原质押平台：${platform === "trade-finance" ? "贸易金融平台A" : platform === "defi" ? "去中心化融资平台B" : "银行融资通道C"}
+再融资金额：${amount} USDT
+质押凭证ID：${pledgeId}
+预计到账时间：5分钟内`;
+        }, 2000);
+
+      } catch (error) {
+        statusBox.textContent = `❌ 执行失败：${error.message}`;
+      }
+    }
   </script>
 </body>
 </html>

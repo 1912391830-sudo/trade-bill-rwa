@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能帮助中心 - 贸易提单RWA系统</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* 全局重置 - 统一基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft Yahei", sans-serif;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* 导航栏 - 与创新/团队页面保持一致 */
+    .top-nav {
+      background: #ffffff;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+    .top-nav .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d8cf0;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 16px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #666;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #2d8cf0;
+      background-color: #f0f7ff;
+    }
+    .nav-links a.active {
+      color: #2d8cf0;
+      font-weight: 600;
+      background-color: #f0f7ff;
+    }
+
+    /* 页面容器 */
+    .help-container {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 16px;
+    }
+
+    /* 页面标题 */
+    .page-title {
+      font-size: 26px;
+      color: #1f2d3d;
+      margin-bottom: 16px;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+    }
+    .page-subtitle {
+      font-size: 15px;
+      color: #666;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    /* AI问答核心区域 */
+    .ai-chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    /* 聊天记录区域 */
+    .chat-history {
+      height: 500px;
+      padding: 24px;
+      overflow-y: auto;
+      background-color: #fafbfc;
+    }
+
+    /* 消息气泡通用样式 */
+    .message {
+      margin-bottom: 16px;
+      max-width: 80%;
+      clear: both;
+    }
+    .message-content {
+      padding: 12px 16px;
+      border-radius: 8px;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    /* 用户消息 */
+    .user-message {
+      float: right;
+    }
+    .user-message .message-content {
+      background-color: #2d8cf0;
+      color: #ffffff;
+      border-bottom-right-radius: 2px;
+    }
+
+    /* AI消息 */
+    .ai-message {
+      float: left;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .ai-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #f0f7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2d8cf0;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .ai-message .message-content {
+      background-color: #ffffff;
+      color: #333;
+      border: 1px solid #e5e6eb;
+      border-bottom-left-radius: 2px;
+    }
+
+    /* 输入区域 */
+    .chat-input-area {
+      padding: 20px;
+      border-top: 1px solid #e5e6eb;
+      background-color: #ffffff;
+    }
+    .input-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    #question-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #e5e6eb;
+      border-radius: 8px;
+      font-size: 15px;
+      resize: none;
+      height: 60px;
+      transition: border-color 0.3s ease;
+    }
+    #question-input:focus {
+      border-color: #2d8cf0;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(45, 140, 240, 0.1);
+    }
+    #send-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      background-color: #2d8cf0;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+    #send-btn:hover {
+      background-color: #1c7ed6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(45, 140, 240, 0.2);
+    }
+    #send-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 常见问题区域 */
+    .faq-section {
+      max-width: 800px;
+      margin: 32px auto 0;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 24px;
+    }
+    .faq-title {
+      font-size: 18px;
+      color: #1f2d3d;
+      margin-bottom: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .faq-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .faq-item {
+      padding: 12px 16px;
+      border: 1px solid #e5e6eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .faq-item:hover {
+      background-color: #f0f7ff;
+      border-color: #2d8cf0;
+    }
+    .faq-question {
+      font-size: 14px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 响应式适配 */
+    @media (max-width: 768px) {
+      .chat-history {
+        height: 400px;
+        padding: 16px;
+      }
+      .faq-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-nav {
+        padding: 12px 16px;
+      }
+      .nav-links {
+        gap: 16px;
+        font-size: 14px;
+      }
+      .page-title {
+        font-size: 22px;
+      }
+      .chat-history {
+        height: 300px;
+      }
+      .chat-input-area {
+        padding: 16px;
+      }
+      #question-input {
+        height: 50px;
+        font-size: 14px;
+      }
+      #send-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 - 与其他页面保持一致 -->
+  <div class="top-nav">
+    <div class="logo">TradeWeb</div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="personal.html">个人中心</a>
+      <a href="ebl.html">数字提单化</a>
+      <a href="nft.html">NFT铸造</a>
+      <a href="finance.html">融资管理</a>
+      <a href="team.html">团队介绍</a>
+      <a href="innovation.html">创新场景</a>
+      <a href="help.html" class="active">智能帮助</a>
+    </div>
+  </div>
+
+  <!-- 帮助页面主体 -->
+  <div class="help-container">
+    <h2 class="page-title">帮助中心</h2>
+    <p class="page-subtitle">有任何问题都可以问我，我会尽力解答关于提单数字化、NFT铸造、融资管理的所有问题</p>
+
+    <!-- AI问答核心区域 -->
+    <div class="ai-chat-container">
+      <!-- 聊天记录 -->
+      <div class="chat-history" id="chatHistory">
+        <!-- AI欢迎语 -->
+        <div class="message ai-message">
+          <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+          <div class="message-content">
+            你好！我是TradeWeb智能助手，专注解答提单数字化、NFT铸造、融资管理相关问题。有什么可以帮助你的吗？
+          </div>
+        </div>
+      </div>
+
+      <!-- 输入区域 -->
+      <div class="chat-input-area">
+        <div class="input-wrapper">
+          <textarea id="question-input" placeholder="请输入你的问题，例如：如何上传提单？NFT铸造需要什么条件？" maxlength="500"></textarea>
+          <button id="send-btn" onclick="sendQuestion()">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 常见问题区域 -->
+    <div class="faq-section">
+      <div class="faq-title"><i class="fa-solid fa-question-circle"></i> 常见问题</div>
+      <div class="faq-list">
+        <div class="faq-item" onclick="quickQuestion('如何上传提单文件？')">
+          <div class="faq-question">如何上传提单文件？</div>
+        </div>
+        <div class="faq-item" onclick="quickQuestion('提单数字化需要多长时间？')">
+          <div class="faq-question">提单数字化需要多长时间？</div>
+        </div>
+        <div class="faq-item" onclick="quickQuestion('NFT铸造后可以转让吗？')">
+          <div class="faq-question">NFT铸造后可以转让吗？</div>
+        </div>
+        <div class="faq-item" onclick="quickQuestion('质押融资的利率是多少？')">
+          <div class="faq-question">质押融资的利率是多少？</div>
+        </div>
+        <div class="faq-item" onclick="quickQuestion('支持哪些格式的提单文件？')">
+          <div class="faq-question">支持哪些格式的提单文件？</div>
+        </div>
+        <div class="faq-item" onclick="quickQuestion('历史提单记录可以删除吗？')">
+          <div class="faq-question">历史提单记录可以删除吗？</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. 知识库 - 核心AI问答数据（可扩展）
+    const knowledgeBase = [
+      // 提单上传相关
+      {
+        keywords: ["上传提单", "提单文件", "文件上传", "怎么上传"],
+        answer: "上传提单文件非常简单：1. 进入「数字提单化」页面；2. 点击上传区域或拖拽文件至上传框；3. 支持PDF、JPG、PNG、Excel格式，最大10MB；4. 上传后系统自动解析提取信息。"
+      },
+      {
+        keywords: ["提单格式", "支持格式", "文件格式"],
+        answer: "系统支持的提单文件格式包括：PDF（推荐）、JPG/JPEG、PNG图片格式、Excel（.xlsx/.xls）格式，文件大小限制为10MB以内。建议使用清晰的扫描件或电子版提单以提高识别准确率。"
+      },
+      {
+        keywords: ["数字化时间", "解析时间", "识别时间"],
+        answer: "提单数字化解析通常需要3-5秒，具体取决于文件大小和复杂度。系统会自动提取提单编号、发货人、收货人、货物信息等核心内容，解析完成后可直接查看结构化结果。"
+      },
+      // NFT铸造相关
+      {
+        keywords: ["NFT铸造", "铸造NFT", "NFT条件", "铸造条件"],
+        answer: "NFT铸造需要满足以下条件：1. 已完成提单数字化提取；2. 提单信息完整有效；3. 已登录账号并完成身份验证。铸造流程：保存提取结果后点击「前往NFT铸造」按钮，确认信息后即可完成铸造，铸造结果上链可查。"
+      },
+      {
+        keywords: ["NFT转让", "转让NFT", "NFT转移"],
+        answer: "NFT铸造完成后支持转让操作：1. 进入NFT管理页面；2. 选择需要转让的提单NFT；3. 输入接收方钱包地址；4. 确认转让并完成链上签名，转让记录永久保存在区块链上，可随时查询。"
+      },
+      // 融资管理相关
+      {
+        keywords: ["质押融资", "融资利率", "利率"],
+        answer: "提单NFT质押融资的基础利率为4.2%/年，具体利率会根据货物类型、价值、融资期限有所调整：1. 大宗商品（铁矿石、农产品）利率3.8%-4.5%；2. 电子产品/机械设备利率4.0%-4.8%；3. 融资期限支持30天、60天、90天，期限越长利率略有上浮。"
+      },
+      // 历史记录相关
+      {
+        keywords: ["历史记录", "删除记录", "提单删除"],
+        answer: "历史提单记录支持删除操作：1. 进入「数字提单化」页面的历史记录区域；2. 找到需要删除的提单记录；3. 点击「删除」按钮并确认；4. 删除后该记录将从本地存储中移除，无法恢复，请谨慎操作。"
+      },
+      // 通用问题
+      {
+        keywords: ["帮助", "客服", "人工"],
+        answer: "如果我的回答未能解决你的问题，可以通过以下方式联系人工客服：1. 工作日9:00-18:00在线客服；2. 客服邮箱：support@tradeweb.com；3. 客服电话：400-123-4567。"
+      }
+    ];
+
+    // 2. 语义匹配函数 - AI核心逻辑
+    function matchAnswer(question) {
+      // 统一转为小写，去除标点
+      const cleanQuestion = question.toLowerCase().replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, "");
+      let bestMatch = null;
+      let maxScore = 0;
+
+      // 遍历知识库，计算匹配度
+      knowledgeBase.forEach(item => {
+        let score = 0;
+        item.keywords.forEach(keyword => {
+          if (cleanQuestion.includes(keyword.toLowerCase())) {
+            score += 1;
+          }
+        });
+
+        // 记录最高匹配度
+        if (score > maxScore) {
+          maxScore = score;
+          bestMatch = item.answer;
+        }
+      });
+
+      // 无匹配时返回默认回答
+      return bestMatch || "抱歉，我暂时无法解答这个问题。你可以尝试：1. 换一种提问方式；2. 查看常见问题；3. 联系人工客服获取帮助。";
+    }
+
+    // 3. 发送问题函数
+    function sendQuestion() {
+      const input = document.getElementById('question-input');
+      const question = input.value.trim();
+      const chatHistory = document.getElementById('chatHistory');
+      const sendBtn = document.getElementById('send-btn');
+
+      // 空问题校验
+      if (!question) {
+        alert('请输入你的问题！');
+        return;
+      }
+
+      // 禁用发送按钮，清空输入框
+      sendBtn.disabled = true;
+      input.value = '';
+
+      // 添加用户消息到聊天记录
+      chatHistory.innerHTML += `
+        <div class="message user-message">
+          <div class="message-content">${question}</div>
+        </div>
+      `;
+
+      // 添加AI加载状态
+      chatHistory.innerHTML += `
+        <div class="message ai-message">
+          <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+          <div class="message-content"><div class="loading"></div></div>
+        </div>
+      `;
+
+      // 滚动到底部
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      // 模拟AI思考（500ms）
+      setTimeout(() => {
+        // 获取AI回答
+        const answer = matchAnswer(question);
+        
+        // 替换加载状态为回答内容
+        const aiMessages = chatHistory.querySelectorAll('.ai-message');
+        const lastAiMessage = aiMessages[aiMessages.length - 1];
+        lastAiMessage.innerHTML = `
+          <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+          <div class="message-content">${answer}</div>
+        `;
+
+        // 启用发送按钮
+        sendBtn.disabled = false;
+        
+        // 滚动到底部
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }, 500);
+    }
+
+    // 4. 快捷提问函数
+    function quickQuestion(question) {
+      const input = document.getElementById('question-input');
+      input.value = question;
+      sendQuestion();
+    }
+
+    // 5. 回车发送问题
+    document.getElementById('question-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendQuestion();
+      }
+    });
+
+    // 6. 页面加载完成后聚焦输入框
+    window.onload = () => {
+      document.getElementById('question-input').focus();
+    };
+  </script>
+</body>
+</html>

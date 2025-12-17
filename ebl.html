@@ -7,66 +7,104 @@
   <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="common.css">
   <style>
-    /* 统一导航栏 */
+    /* 全局重置 - 解决文字重叠核心 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft Yahei", sans-serif;
+      border: none;
+      outline: none;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* 统一导航栏 - 优化视觉层级 */
     .top-nav {
-      
-      background: #e0e5ec;
-      padding: 12px 20px;
+      background: #ffffff;
+      padding: 15px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 99;
     }
     .top-nav .logo {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d8cf0;
+      letter-spacing: 0.5px;
     }
     .nav-links {
       display: flex;
-      gap: 40px;
+      gap: 32px;
       font-size: 16px;
-      color: #333;
     }
     .nav-links a {
       text-decoration: none;
-      color: inherit;
+      color: #666;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #2d8cf0;
+      background-color: #f0f7ff;
+    }
+    .nav-links a.active,
+    .nav-links a[style*="color: #87CEEB"] {
+      color: #2d8cf0;
+      font-weight: 600;
+      background-color: #f0f7ff;
     }
 
-    /* 提单上传+提取容器 */
+    /* 提单上传+提取容器 - 优化间距和响应式 */
     .bill-container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 16px;
     }
     .step-title {
-      font-size: 24px;
-      color: #333;
-      margin-bottom: 30px;
+      font-size: 26px;
+      color: #1f2d3d;
+      margin-bottom: 36px;
       text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.8px;
     }
-    /* 步骤导航 */
+
+    /* 步骤导航 - 优化视觉和交互 */
     .step-nav {
       display: flex;
       justify-content: space-between;
       margin-bottom: 40px;
       position: relative;
+      padding: 0 40px;
     }
     .step-nav::after {
       content: '';
       position: absolute;
       top: 20px;
-      left: 0;
-      width: 100%;
+      left: 60px;
+      right: 60px;
       height: 2px;
-      background: #eee;
+      background: #e5e6eb;
       z-index: 1;
     }
     .step-item {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: #fff;
-      border: 2px solid #eee;
+      background: #ffffff;
+      border: 2px solid #e5e6eb;
       color: #999;
       display: flex;
       align-items: center;
@@ -74,15 +112,17 @@
       font-weight: 600;
       position: relative;
       z-index: 2;
+      transition: all 0.3s ease;
     }
     .step-item.active {
-      background: #87CEEB;
-      border-color: #87CEEB;
+      background: #2d8cf0;
+      border-color: #2d8cf0;
       color: #fff;
+      box-shadow: 0 0 0 4px rgba(45, 140, 240, 0.1);
     }
     .step-item.done {
-      background: #66cc99;
-      border-color: #66cc99;
+      background: #52c41a;
+      border-color: #52c41a;
       color: #fff;
     }
     .step-label {
@@ -92,94 +132,130 @@
       transform: translateX(-50%);
       font-size: 14px;
       color: #666;
+      white-space: nowrap;
+      padding: 0 8px;
+      background-color: #f5f7fa;
     }
 
-    /* 上传区域 */
+    /* 上传区域 - 优化布局和交互 */
     .upload-section {
-      background: #fff;
+      background: #ffffff;
       padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
     .upload-area {
-      border: 2px dashed #ddd;
+      border: 2px dashed #e5e6eb;
       border-radius: 8px;
       padding: 60px 20px;
       cursor: pointer;
-      transition: border-color 0.3s ease;
-      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      margin-bottom: 24px;
+      background-color: #fafbfc;
     }
     .upload-area:hover {
-      border-color: #87CEEB;
+      border-color: #2d8cf0;
+      background-color: #f0f7ff;
     }
     .upload-icon {
-      font-size: 60px;
+      font-size: 64px;
       color: #ccc;
       margin-bottom: 20px;
+      transition: color 0.3s ease;
+    }
+    .upload-area:hover .upload-icon {
+      color: #2d8cf0;
     }
     .upload-text {
       font-size: 16px;
       color: #666;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      font-weight: 500;
     }
     .upload-tips {
-      font-size: 12px;
+      font-size: 13px;
       color: #999;
+      line-height: 1.5;
     }
     #fileInput {
       display: none;
     }
     .file-preview {
-      margin: 15px 0;
-      padding: 10px;
-      border: 1px solid #eee;
-      border-radius: 4px;
+      margin: 16px 0;
+      padding: 16px;
+      border: 1px solid #e5e6eb;
+      border-radius: 6px;
       display: none;
+      background-color: #fafbfc;
+      text-align: left;
     }
     .preview-title {
       font-size: 14px;
       color: #333;
-      margin-bottom: 8px;
-      text-align: left;
+      margin-bottom: 12px;
+      font-weight: 500;
     }
     .preview-btn {
-      padding: 4px 8px;
-      font-size: 12px;
+      padding: 6px 12px;
+      font-size: 13px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      background: #87CEEB;
+      background: #2d8cf0;
       color: #fff;
       margin-right: 8px;
+      transition: background 0.3s ease;
+    }
+    .preview-btn:hover {
+      background: #1c7ed6;
     }
     .upload-btn {
-      padding: 10px 20px;
-      background: #87CEEB;
+      padding: 12px 32px;
+      background: #2d8cf0;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       color: #fff;
       cursor: pointer;
       font-size: 16px;
-      margin-top: 10px;
+      margin-top: 8px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    .upload-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .upload-btn:not(:disabled):hover {
+      background: #1c7ed6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(45, 140, 240, 0.2);
+    }
+    #fileInfo {
+      margin-top: 12px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     /* 解析加载区域（默认隐藏） */
     .loading-section {
-      background: #fff;
-      padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: #ffffff;
+      padding: 60px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
       display: none;
     }
     .loading-icon {
-      font-size: 60px;
-      color: #87CEEB;
-      margin-bottom: 20px;
+      font-size: 72px;
+      color: #2d8cf0;
+      margin-bottom: 24px;
       animation: spin 2s linear infinite;
+      opacity: 0.8;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -188,107 +264,149 @@
     .loading-text {
       font-size: 16px;
       color: #333;
+      font-weight: 500;
+      line-height: 1.6;
     }
 
     /* 提取结果区域（默认隐藏） */
     .result-section {
-      background: #fff;
+      background: #ffffff;
       padding: 40px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
       display: none;
     }
     .result-title {
       font-size: 20px;
-      color: #333;
-      margin-bottom: 20px;
+      color: #1f2d3d;
+      margin-bottom: 28px;
       text-align: center;
+      font-weight: 600;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e5e6eb;
     }
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     .form-label {
       display: block;
       margin-bottom: 8px;
       color: #333;
       font-weight: 500;
+      font-size: 14px;
     }
     .form-control {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-      background: #f9f9f9;
+      padding: 12px 16px;
+      border: 1px solid #e5e6eb;
+      border-radius: 6px;
+      font-size: 15px;
+      background: #fafbfc;
+      transition: border-color 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: #2d8cf0;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(45, 140, 240, 0.1);
     }
     .btn-group {
       display: flex;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 12px;
+      margin-top: 16px;
     }
     .save-btn, .nft-btn {
       flex: 1;
       padding: 12px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       color: #fff;
       font-size: 16px;
       cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
     .save-btn {
-      background: #87CEEB;
+      background: #2d8cf0;
+    }
+    .save-btn:hover {
+      background: #1c7ed6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(45, 140, 240, 0.2);
     }
     .nft-btn {
-      background: #66cc99;
+      background: #52c41a;
+    }
+    .nft-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .nft-btn:not(:disabled):hover {
+      background: #41a917;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(82, 196, 26, 0.2);
     }
 
     /* 历史上传记录 */
     .history-section {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     .history-title {
       font-size: 18px;
-      color: #333;
-      margin-bottom: 15px;
+      color: #1f2d3d;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       gap: 8px;
+      font-weight: 600;
     }
     .history-empty {
       text-align: center;
-      padding: 20px;
+      padding: 40px 20px;
       color: #999;
+      font-size: 14px;
+      background-color: #fafbfc;
+      border-radius: 6px;
     }
     .history-list {
-      max-height: 300px;
+      max-height: 400px;
       overflow-y: auto;
+      border-radius: 6px;
+      border: 1px solid #e5e6eb;
     }
     .history-item {
-      padding: 15px;
-      border-bottom: 1px solid #eee;
+      padding: 16px;
+      border-bottom: 1px solid #e5e6eb;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      transition: background-color 0.3s ease;
+    }
+    .history-item:hover {
+      background-color: #fafbfc;
     }
     .history-item:last-child {
       border-bottom: none;
     }
     .history-info {
       flex: 1;
+      padding-right: 16px;
     }
     .history-billno {
       font-weight: 600;
-      color: #333;
-      font-size: 16px;
+      color: #1f2d3d;
+      font-size: 15px;
+      margin-bottom: 8px;
     }
     .history-file {
       font-size: 14px;
       color: #666;
-      margin: 8px 0;
+      margin-bottom: 4px;
+      line-height: 1.5;
     }
     .history-time {
       font-size: 12px;
@@ -298,72 +416,175 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      flex-shrink: 0;
     }
     .history-btn {
-      padding: 6px 10px;
+      padding: 6px 12px;
       font-size: 12px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       color: #fff;
+      transition: background 0.3s ease;
+      white-space: nowrap;
     }
     .preview-original-btn {
-      background: #87CEEB;
+      background: #2d8cf0;
+    }
+    .preview-original-btn:hover {
+      background: #1c7ed6;
     }
     .preview-digital-btn {
-      background: #66cc99;
+      background: #52c41a;
+    }
+    .preview-digital-btn:hover {
+      background: #41a917;
     }
     .delete-btn {
-      background: #ff6666;
+      background: #ff4d4f;
+    }
+    .delete-btn:hover {
+      background: #ff2b2c;
     }
 
-    /* 文件预览弹窗 */
+    /* 文件预览弹窗 - 优化层级和样式 */
     .preview-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.7);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 999;
+      z-index: 9999;
+      padding: 20px;
     }
     .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 80%;
-      max-height: 80%;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 90%;
+      max-height: 90%;
       overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
     .modal-title {
       font-size: 18px;
-      color: #333;
-      margin-bottom: 15px;
+      color: #1f2d3d;
+      margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-weight: 600;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e6eb;
     }
     .close-modal {
       font-size: 20px;
       cursor: pointer;
       color: #999;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
     }
     .close-modal:hover {
-      color: #333;
+      color: #ff4d4f;
+      background-color: #fef0f0;
     }
     .modal-body {
-      font-size: 16px;
-      line-height: 1.6;
+      font-size: 15px;
+      line-height: 1.8;
       color: #333;
+      margin-top: 16px;
     }
     .file-content {
       width: 100%;
       height: 500px;
-      border: 1px solid #eee;
-      border-radius: 4px;
+      border: 1px solid #e5e6eb;
+      border-radius: 6px;
+      background-color: #ffffff;
+    }
+
+    /* 响应式适配 - 解决移动端文字重叠 */
+    @media (max-width: 768px) {
+      .step-nav {
+        padding: 0 20px;
+      }
+      .step-nav::after {
+        left: 40px;
+        right: 40px;
+      }
+      .upload-section, .loading-section, .result-section {
+        padding: 24px 16px;
+      }
+      .upload-area {
+        padding: 40px 16px;
+      }
+      .upload-icon {
+        font-size: 48px;
+      }
+      .loading-icon {
+        font-size: 56px;
+      }
+      .btn-group {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .history-item {
+        flex-direction: column;
+      }
+      .history-ops {
+        flex-direction: row;
+        margin-top: 16px;
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .history-btn {
+        font-size: 11px;
+        padding: 4px 8px;
+      }
+      .file-content {
+        height: 300px;
+      }
+      .modal-content {
+        max-width: 95%;
+        max-height: 95%;
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-nav {
+        padding: 12px 16px;
+      }
+      .nav-links {
+        gap: 16px;
+        font-size: 14px;
+      }
+      .step-title {
+        font-size: 22px;
+        margin-bottom: 24px;
+      }
+      .step-item {
+        width: 36px;
+        height: 36px;
+      }
+      .step-label {
+        font-size: 12px;
+        top: 46px;
+      }
+      .upload-text {
+        font-size: 14px;
+      }
+      .upload-tips {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -373,7 +594,7 @@
     <div class="nav-links">
       <a href="index.html">首页</a>
       <a href="personal.html">个人中心</a>
-      <a href="bill.html" style="color: #87CEEB;">数字提单化</a>
+      <a href="bill.html" class="active">数字提单化</a>
     </div>
   </div>
 
@@ -401,7 +622,7 @@
       <div class="upload-area" onclick="document.getElementById('fileInput').click()">
         <div class="upload-icon"><i class="fa-solid fa-cloud-upload"></i></div>
         <div class="upload-text">点击或拖拽文件至此处上传提单</div>
-        <div class="upload-tips">支持格式：PDF、图片（JPG/PNG）、Excel</div>
+        <div class="upload-tips">支持格式：PDF、图片（JPG/PNG）、Excel | 最大文件大小：10MB</div>
       </div>
       <input type="file" id="fileInput" accept=".pdf,.jpg,.png,.xlsx,.xls">
       
@@ -628,10 +849,10 @@
     function previewDigitalFile(digitalContent, billNo) {
       const content = JSON.parse(digitalContent);
       const html = `
-        <div style="padding: 10px;">
-          <p><strong>提单编号：</strong>${content.billNo}</p>
-          <p><strong>发货人信息：</strong>${content.shipper}</p>
-          <p><strong>收货人信息：</strong>${content.consignee}</p>
+        <div style="padding: 16px; background-color: #fafbfc; border-radius: 6px;">
+          <p style="margin-bottom: 8px;"><strong>提单编号：</strong>${content.billNo}</p>
+          <p style="margin-bottom: 8px;"><strong>发货人信息：</strong>${content.shipper}</p>
+          <p style="margin-bottom: 8px;"><strong>收货人信息：</strong>${content.consignee}</p>
           <p><strong>货物信息：</strong>${content.goodsInfo}</p>
         </div>
       `;

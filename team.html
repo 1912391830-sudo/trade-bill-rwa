@@ -3,191 +3,230 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradeWeb - 团队介绍</title>
+  <title>团队介绍 - 贸易提单RWA系统</title>
   <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="common.css">
   <style>
-    /* 顶部导航（同首页） */
+    /* 全局重置 - 统一基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft Yahei", sans-serif;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* 导航栏 - 与创新页面保持一致 */
     .top-nav {
-      background: #e0e5ec;
-      padding: 12px 20px;
+      background: #ffffff;
+      padding: 15px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 99;
     }
     .top-nav .logo {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d8cf0;
+      letter-spacing: 0.5px;
     }
     .nav-links {
       display: flex;
-      gap: 40px;
+      gap: 32px;
       font-size: 16px;
-      color: #333;
     }
     .nav-links a {
       text-decoration: none;
-      color: inherit;
-    }
-    .login-btn {
-      padding: 8px 16px;
-      background: #87CEEB;
-      border: none;
+      color: #666;
+      padding: 4px 8px;
       border-radius: 4px;
-      cursor: pointer;
-      color: #fff;
+      transition: all 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: #2d8cf0;
+      background-color: #f0f7ff;
+    }
+    .nav-links a.active {
+      color: #2d8cf0;
+      font-weight: 600;
+      background-color: #f0f7ff;
     }
 
-    /* 团队轮播 */
-    .team-section {
-      padding: 40px 20px;
-      max-width: 1200px;
-      margin: 0 auto;
+    /* 页面容器 */
+    .team-container {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 16px;
     }
-    .team-title {
-      text-align: center;
-      font-size: 24px;
+
+    /* 页面标题 */
+    .page-title {
+      font-size: 26px;
+      color: #1f2d3d;
       margin-bottom: 40px;
-      color: #333;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.8px;
     }
-    .carousel-container {
+
+    /* 团队轮播核心样式 - 一页一人 */
+    .team-carousel {
       position: relative;
       width: 100%;
-      max-width: 800px;
+      max-width: 500px;
       margin: 0 auto;
       overflow: hidden;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .carousel-wrapper {
+
+    /* 轮播列表 - 横向排列 */
+    .carousel-list {
       display: flex;
-      transition: transform 0.5s ease;
+      width: 400%; /* 4人 → 400% */
+      height: 500px;
+      transition: transform 0.5s ease-in-out; /* 平滑过渡 */
+      animation: carouselAuto 12s linear infinite; /* 4秒一轮（1秒/人） */
     }
-    .team-card {
-      min-width: 100%;
-      padding: 30px;
-      text-align: center;
-      background: #fff;
+
+    /* 自动轮播动画 */
+    @keyframes carouselAuto {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-25%); } /* 第2人 */
+      50% { transform: translateX(-50%); } /* 第3人 */
+      75% { transform: translateX(-75%); } /* 第4人 */
+      100% { transform: translateX(0); } /* 回到第1人 */
     }
-    .member-avatar {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      background: #87CEEB;
+
+    /* 单个团队成员卡片 */
+    .team-item {
+      width: 25%; /* 4人 → 25%/人 */
+      height: 100%;
+      background: #ffffff;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-size: 60px;
+      padding: 20px;
+      text-align: center;
     }
-    .member-name {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #333;
-    }
-    .member-role {
-      color: #666;
-      margin-bottom: 15px;
-    }
-    .member-desc {
-      color: #888;
-      line-height: 1.6;
-    }
-    /* 轮播按钮 */
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 40px;
-      height: 40px;
-      border: none;
+
+    /* 成员头像 */
+    .team-avatar {
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.8);
-      color: #87CEEB;
-      font-size: 20px;
-      cursor: pointer;
-      z-index: 10;
+      object-fit: cover;
+      margin-bottom: 24px;
+      border: 4px solid #f0f7ff;
+      box-shadow: 0 4px 8px rgba(45, 140, 240, 0.1);
     }
-    .prev-btn { left: 10px; }
-    .next-btn { right: 10px; }
+
+    /* 成员姓名 */
+    .team-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: #2d8cf0;
+      letter-spacing: 0.5px;
+    }
+
+    /* 响应式适配 */
+    @media (max-width: 768px) {
+      .team-carousel {
+        max-width: 90%;
+      }
+      .carousel-list {
+        height: 400px;
+      }
+      .team-avatar {
+        width: 160px;
+        height: 160px;
+      }
+      .team-name {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .top-nav {
+        padding: 12px 16px;
+      }
+      .nav-links {
+        gap: 16px;
+        font-size: 14px;
+      }
+      .page-title {
+        font-size: 22px;
+        margin-bottom: 24px;
+      }
+      .carousel-list {
+        height: 320px;
+      }
+      .team-avatar {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 16px;
+      }
+      .team-name {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- 顶部导航 -->
+  <!-- 导航栏 - 与创新页面完全一致 -->
   <div class="top-nav">
     <div class="logo">TradeWeb</div>
     <div class="nav-links">
       <a href="index.html">首页</a>
-      <a href="team.html" style="color: #87CEEB;">团队介绍</a>
+      <a href="personal.html">个人中心</a>
+      <a href="ebl.html">数字提单化</a>
+      <a href="nft.html">NFT铸造</a>
+      <a href="finance.html">融资管理</a>
+      <a href="team.html" class="active">团队介绍</a>
+      <a href="innovation.html">创新场景</a>
     </div>
-    <button class="login-btn" onclick="window.location.href='login.html'">登陆</button>
   </div>
 
-  <!-- 团队轮播区域 -->
-  <div class="team-section">
-    <h2 class="team-title">我们的团队</h2>
-    <div class="carousel-container">
-      <div class="carousel-wrapper" id="carouselWrapper">
+  <!-- 团队页面主体 -->
+  <div class="team-container">
+    <h2 class="page-title">核心团队成员</h2>
+
+    <!-- 团队轮播区域 -->
+    <div class="team-carousel">
+      <div class="carousel-list">
         <!-- 成员1 -->
-        <div class="team-card">
-          <div class="member-avatar"><<i class="fa-solid fa-user"></</i></div>
-          <div class="member-name">罗郁涵</div>
-          
+        <div class="team-item">
+          <img src="https://picsum.photos/id/1005/400/400" alt="团队成员1" class="team-avatar">
+          <div class="team-name">张明</div>
         </div>
         <!-- 成员2 -->
-        <div class="team-card">
-          <div class="member-avatar"><<i class="fa-solid fa-user"></</i></div>
-          <div class="member-name">黄怡婷</div>
-         
+        <div class="team-item">
+          <img src="https://picsum.photos/id/1012/400/400" alt="团队成员2" class="team-avatar">
+          <div class="team-name">李华</div>
+        </div>
         <!-- 成员3 -->
-        <div class="team-card">
-          <div class="member-avatar"><i class="fa-solid fa-user"></i></div>
-          <div class="member-name">颜麟沣</div>
-          
+        <div class="team-item">
+          <img src="https://picsum.photos/id/1027/400/400" alt="团队成员3" class="team-avatar">
+          <div class="team-name">王芳</div>
+        </div>
         <!-- 成员4 -->
-        <div class="team-card">
-          <div class="member-avatar"><<i class="fa-solid fa-user"></</i></div>
-          <div class="member-name">尤书航</div>
+        <div class="team-item">
+          <img src="https://picsum.photos/id/1074/400/400" alt="团队成员4" class="team-avatar">
+          <div class="team-name">赵强</div>
         </div>
       </div>
-      <button class="carousel-btn prev-btn" id="prevBtn"><<i class="fa-solid fa-chevron-left"></</i></button>
-      <button class="carousel-btn next-btn" id="nextBtn"><<i class="fa-solid fa-chevron-right"></</i></button>
     </div>
   </div>
-
-  <script>
-    // 轮播逻辑
-    const carouselWrapper = document.getElementById('carouselWrapper');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    let currentIndex = 0;
-    const cardCount = document.querySelectorAll('.team-card').length;
-
-    // 切换轮播
-    function goToSlide(index) {
-      carouselWrapper.style.transform = `translateX(-${index * 100}%)`;
-      currentIndex = index;
-    }
-
-    // 下一张
-    nextBtn.addEventListener('click', () => {
-      const nextIndex = (currentIndex + 1) % cardCount;
-      goToSlide(nextIndex);
-    });
-
-    // 上一张
-    prevBtn.addEventListener('click', () => {
-      const prevIndex = (currentIndex - 1 + cardCount) % cardCount;
-      goToSlide(prevIndex);
-    });
-
-    // 自动轮播（可选）
-    setInterval(() => {
-      const nextIndex = (currentIndex + 1) % cardCount;
-      goToSlide(nextIndex);
-    }, 3000);
-  </script>
 </body>
 </html>
