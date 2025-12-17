@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字提单化 - 贸易提单RWA系统</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* 统一导航栏 */
+    .top-nav {
+      background: #e0e5ec;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav .logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      font-size: 16px;
+      color: #333;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* 提单上传+提取容器 */
+    .bill-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .step-title {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    /* 步骤导航 */
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .step-nav::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #eee;
+      z-index: 1;
+    }
+    .step-item {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #eee;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      position: relative;
+      z-index: 2;
+    }
+    .step-item.active {
+      background: #87CEEB;
+      border-color: #87CEEB;
+      color: #fff;
+    }
+    .step-item.done {
+      background: #66cc99;
+      border-color: #66cc99;
+      color: #fff;
+    }
+    .step-label {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* 上传区域 */
+    .upload-section {
+      background: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .upload-area {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 60px 20px;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+      margin-bottom: 20px;
+    }
+    .upload-area:hover {
+      border-color: #87CEEB;
+    }
+    .upload-icon {
+      font-size: 60px;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+    .upload-text {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .upload-tips {
+      font-size: 12px;
+      color: #999;
+    }
+    #fileInput {
+      display: none;
+    }
+    .file-preview {
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      display: none;
+    }
+    .preview-title {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+    .preview-btn {
+      padding: 4px 8px;
+      font-size: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #87CEEB;
+      color: #fff;
+      margin-right: 8px;
+    }
+    .upload-btn {
+      padding: 10px 20px;
+      background: #87CEEB;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    /* 解析加载区域（默认隐藏） */
+    .loading-section {
+      background: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      margin-bottom: 30px;
+      display: none;
+    }
+    .loading-icon {
+      font-size: 60px;
+      color: #87CEEB;
+      margin-bottom: 20px;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 16px;
+      color: #333;
+    }
+
+    /* 提取结果区域（默认隐藏） */
+    .result-section {
+      background: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      display: none;
+    }
+    .result-title {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      background: #f9f9f9;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .save-btn, .nft-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .save-btn {
+      background: #87CEEB;
+    }
+    .nft-btn {
+      background: #66cc99;
+    }
+
+    /* 历史上传记录 */
+    .history-section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .history-title {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .history-empty {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+    }
+    .history-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .history-item {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    .history-info {
+      flex: 1;
+    }
+    .history-billno {
+      font-weight: 600;
+      color: #333;
+      font-size: 16px;
+    }
+    .history-file {
+      font-size: 14px;
+      color: #666;
+      margin: 8px 0;
+    }
+    .history-time {
+      font-size: 12px;
+      color: #999;
+    }
+    .history-ops {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .history-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .preview-original-btn {
+      background: #87CEEB;
+    }
+    .preview-digital-btn {
+      background: #66cc99;
+    }
+    .delete-btn {
+      background: #ff6666;
+    }
+
+    /* 文件预览弹窗 */
+    .preview-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 80%;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    .modal-title {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .close-modal {
+      font-size: 20px;
+      cursor: pointer;
+      color: #999;
+    }
+    .close-modal:hover {
+      color: #333;
+    }
+    .modal-body {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+    }
+    .file-content {
+      width: 100%;
+      height: 500px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-nav">
+    <div class="logo">TradeWeb</div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="personal.html">个人中心</a>
+      <a href="bill.html" style="color: #87CEEB;">数字提单化</a>
+    </div>
+  </div>
+
+  <div class="bill-container">
+    <h2 class="step-title">提单信息结构化提取</h2>
+
+    <!-- 步骤导航 -->
+    <div class="step-nav">
+      <div class="step-item active" id="step1">
+        1
+        <div class="step-label">上传提单</div>
+      </div>
+      <div class="step-item" id="step2">
+        2
+        <div class="step-label">解析加载</div>
+      </div>
+      <div class="step-item" id="step3">
+        3
+        <div class="step-label">提取结果</div>
+      </div>
+    </div>
+
+    <!-- 1. 上传提单区域 -->
+    <div class="upload-section" id="uploadSection">
+      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon"><i class="fa-solid fa-cloud-upload"></i></div>
+        <div class="upload-text">点击或拖拽文件至此处上传提单</div>
+        <div class="upload-tips">支持格式：PDF、图片（JPG/PNG）、Excel</div>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf,.jpg,.png,.xlsx,.xls">
+      
+      <!-- 上传文件预览 -->
+      <div class="file-preview" id="filePreview">
+        <div class="preview-title">已选择文件：<span id="fileName">未知文件</span></div>
+        <button class="preview-btn" id="previewUploadedFile">预览文件</button>
+      </div>
+      
+      <div id="fileInfo" style="margin-top: 10px; color: #666;"></div>
+      <button class="upload-btn" id="startParseBtn" disabled>开始解析</button>
+    </div>
+
+    <!-- 2. 解析加载区域 -->
+    <div class="loading-section" id="loadingSection">
+      <div class="loading-icon"><i class="fa-solid fa-spinner"></i></div>
+      <div class="loading-text">正在解析提单信息，请稍候...</div>
+    </div>
+
+    <!-- 3. 提取结果区域 -->
+    <div class="result-section" id="resultSection">
+      <div class="result-title">提单信息提取结果</div>
+      <div class="form-group">
+        <label class="form-label">提单编号</label>
+        <input type="text" class="form-control" id="billNo" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">发货人信息</label>
+        <input type="text" class="form-control" id="shipper" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">收货人信息</label>
+        <input type="text" class="form-control" id="consignee" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">货物信息</label>
+        <textarea class="form-control" id="goodsInfo" rows="4" readonly></textarea>
+      </div>
+      <div class="btn-group">
+        <button class="save-btn" id="saveBillBtn">保存提取结果</button>
+        <button class="nft-btn" id="toNftBtn" disabled>前往NFT铸造</button>
+      </div>
+    </div>
+
+    <!-- 历史上传记录 -->
+    <div class="history-section">
+      <div class="history-title"><i class="fa-solid fa-clock-rotate-left"></i> 已上传的EBL提单</div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">暂无提单上传记录</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 文件预览弹窗 -->
+  <div class="preview-modal" id="previewModal">
+    <div class="modal-content">
+      <div class="modal-title">
+        <span id="modalTitleText">文件预览</span>
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <iframe id="previewIframe" class="file-content" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 全局变量
+    let selectedFile = null;
+    let fileBase64 = null; // 存储上传文件的Base64（用于预览）
+    // 模拟提单解析数据（后续替换为真实提取接口）
+    const mockExtractData = {
+      billNo: `B/L-${Math.floor(Math.random() * 1000000)}`,
+      shipper: "上海XX贸易有限公司",
+      consignee: "深圳XX进出口有限公司",
+      goodsInfo: "电子产品，共50箱，总重量1000KG，起运港：上海港，目的港：深圳港"
+    };
+
+    // 1. 文件上传处理（含Base64转换）
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        selectedFile = file;
+        // 显示文件信息
+        document.getElementById('fileInfo').textContent = `已选择文件：${file.name}（${(file.size / 1024 / 1024).toFixed(2)}MB）`;
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('filePreview').style.display = 'block';
+        document.getElementById('startParseBtn').disabled = false;
+        
+        // 转换文件为Base64（用于预览和存储）
+        fileBase64 = await fileToBase64(file);
+      } else {
+        selectedFile = null;
+        fileBase64 = null;
+        document.getElementById('fileInfo').textContent = '';
+        document.getElementById('filePreview').style.display = 'none';
+        document.getElementById('startParseBtn').disabled = true;
+      }
+    });
+
+    // 文件转Base64工具函数
+    function fileToBase64(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 2. 预览上传的文件
+    document.getElementById('previewUploadedFile').addEventListener('click', () => {
+      if (fileBase64) {
+        openModal('上传文件预览 - ' + selectedFile.name, fileBase64);
+      }
+    });
+
+    // 3. 开始解析提单
+    document.getElementById('startParseBtn').addEventListener('click', () => {
+      // 切换步骤状态
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step1').classList.add('done');
+      document.getElementById('step2').classList.add('active');
+      // 切换显示区域
+      document.getElementById('uploadSection').style.display = 'none';
+      document.getElementById('loadingSection').style.display = 'block';
+
+      // 模拟解析耗时（3秒）
+      setTimeout(() => {
+        // 解析完成，切换到提取结果步骤
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step2').classList.add('done');
+        document.getElementById('step3').classList.add('active');
+        document.getElementById('loadingSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'block';
+
+        // 填充提取结果（后续替换为真实接口返回数据）
+        document.getElementById('billNo').value = mockExtractData.billNo;
+        document.getElementById('shipper').value = mockExtractData.shipper;
+        document.getElementById('consignee').value = mockExtractData.consignee;
+        document.getElementById('goodsInfo').value = mockExtractData.goodsInfo;
+        
+        // 启用前往NFT按钮
+        document.getElementById('toNftBtn').disabled = false;
+      }, 3000);
+    });
+
+    // 4. 保存提取结果到本地存储（含文件Base64）
+    document.getElementById('saveBillBtn').addEventListener('click', () => {
+      const billNo = document.getElementById('billNo').value.trim();
+      const shipper = document.getElementById('shipper').value.trim();
+      const consignee = document.getElementById('consignee').value.trim();
+      const goodsInfo = document.getElementById('goodsInfo').value.trim();
+
+      if (!billNo || !shipper || !consignee || !goodsInfo) {
+        alert('提取结果为空，无法保存！');
+        return;
+      }
+
+      // 1. 获取已有提单列表（若无则初始化空数组）
+      let billList = JSON.parse(localStorage.getItem('eblHistory')) || [];
+      // 2. 新增当前提单数据（包含文件Base64、数字化内容）
+      const newBill = {
+        id: Date.now(), // 唯一标识
+        billNo,
+        shipper,
+        consignee,
+        goodsInfo,
+        fileName: selectedFile ? selectedFile.name : '未知文件',
+        fileBase64: fileBase64, // 原文件Base64
+        digitalContent: JSON.stringify({ billNo, shipper, consignee, goodsInfo }), // 数字化文件内容
+        createTime: new Date().toLocaleString() // 上传时间
+      };
+      billList.push(newBill);
+      // 3. 保存回本地存储
+      localStorage.setItem('eblHistory', JSON.stringify(billList));
+
+      alert('提单提取结果保存成功！已计入历史记录');
+      // 启用前往NFT按钮
+      document.getElementById('toNftBtn').disabled = false;
+      // 刷新历史记录列表
+      renderHistoryList();
+    });
+
+    // 5. 前往NFT铸造页面
+    document.getElementById('toNftBtn').addEventListener('click', () => {
+      window.location.href = 'nft.html';
+    });
+
+    // 6. 渲染历史上传记录
+    function renderHistoryList() {
+      const billList = JSON.parse(localStorage.getItem('eblHistory')) || [];
+      const historyList = document.getElementById('historyList');
+
+      if (billList.length > 0) {
+        let historyHtml = '';
+        billList.forEach(bill => {
+          historyHtml += `
+            <div class="history-item">
+              <div class="history-info">
+                <div class="history-billno">提单编号：${bill.billNo}</div>
+                <div class="history-file">上传文件：${bill.fileName}</div>
+                <div class="history-time">上传时间：${bill.createTime}</div>
+              </div>
+              <div class="history-ops">
+                <button class="history-btn preview-original-btn" onclick="previewOriginalFile('${bill.fileBase64}', '${bill.fileName}')">预览原文件</button>
+                <button class="history-btn preview-digital-btn" onclick="previewDigitalFile('${bill.digitalContent}', '${bill.billNo}')">预览数字化文件</button>
+                <button class="history-btn delete-btn" onclick="deleteBill(${bill.id})">删除</button>
+              </div>
+            </div>
+          `;
+        });
+        historyList.innerHTML = historyHtml;
+      } else {
+        historyList.innerHTML = '<div class="history-empty">暂无提单上传记录</div>';
+      }
+    }
+
+    // 7. 预览原文件
+    function previewOriginalFile(base64, fileName) {
+      openModal('原文件预览 - ' + fileName, base64);
+    }
+
+    // 8. 预览数字化文件（结构化JSON）
+    function previewDigitalFile(digitalContent, billNo) {
+      const content = JSON.parse(digitalContent);
+      const html = `
+        <div style="padding: 10px;">
+          <p><strong>提单编号：</strong>${content.billNo}</p>
+          <p><strong>发货人信息：</strong>${content.shipper}</p>
+          <p><strong>收货人信息：</strong>${content.consignee}</p>
+          <p><strong>货物信息：</strong>${content.goodsInfo}</p>
+        </div>
+      `;
+      openModal('数字化提单预览 - ' + billNo, html, false);
+    }
+
+    // 9. 删除提单记录
+    function deleteBill(billId) {
+      if (confirm('确定删除该提单记录（含原文件和数字化文件）吗？')) {
+        let billList = JSON.parse(localStorage.getItem('eblHistory')) || [];
+        billList = billList.filter(item => item.id !== billId);
+        localStorage.setItem('eblHistory', JSON.stringify(billList));
+        // 刷新页面
+        renderHistoryList();
+      }
+    }
+
+    // 10. 弹窗操作：打开
+    function openModal(title, content, isIframe = true) {
+      const modal = document.getElementById('previewModal');
+      document.getElementById('modalTitleText').textContent = title;
+      if (isIframe) {
+        document.getElementById('previewIframe').src = content;
+      } else {
+        document.getElementById('modalBody').innerHTML = content;
+      }
+      modal.style.display = 'flex';
+    }
+
+    // 11. 弹窗操作：关闭
+    function closeModal() {
+      const modal = document.getElementById('previewModal');
+      modal.style.display = 'none';
+      // 重置弹窗内容为iframe（避免后续预览错乱）
+      document.getElementById('modalBody').innerHTML = '<iframe id="previewIframe" class="file-content" frameborder="0"></iframe>';
+    }
+
+    // 页面加载时渲染历史记录
+    window.onload = renderHistoryList;
+
+    // 点击弹窗外区域关闭弹窗
+    window.onclick = (e) => {
+      const modal = document.getElementById('previewModal');
+      if (e.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+</body>
+</html>

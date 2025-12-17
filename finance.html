@@ -1,0 +1,427 @@
+<script type="module" src="abi.js"></script>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>贸易提单RWA系统 - 融资管理</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* 融资申请表单 */
+ 
+    .finance-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .finance-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .nft-select-list {
+      border: 1px solid var(--gray);
+      border-radius: var(--radius);
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 8px;
+    }
+
+    .nft-select-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .nft-select-item:hover {
+      background-color: var(--blue-light);
+    }
+
+    .nft-select-item.selected {
+      background-color: var(--blue-light);
+      border-left: 4px solid var(--blue-primary);
+    }
+
+    .amount-info {
+      font-size: 14px;
+      color: var(--success);
+      margin-top: 8px;
+    }
+
+    .terms-box {
+      background-color: var(--gray-light);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 8px;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .terms-box div {
+      margin-bottom: 8px;
+    }
+
+    .terms-box div:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 融资进度列表 */
+    .finance-list {
+      margin-top: 24px;
+    }
+
+    .list-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      padding: 12px 16px;
+      background-color: var(--blue-light);
+      border-radius: var(--radius) var(--radius) 0 0;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .list-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      padding: 16px;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--gray);
+      font-size: 14px;
+      align-items: center;
+    }
+
+    .list-item:last-child {
+      border-radius: 0 0 var(--radius) var(--radius);
+      border-bottom: none;
+    }
+
+    .status-tag {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-pending {
+      background-color: var(--warning);
+      color: var(--white);
+    }
+
+    .status-success {
+      background-color: var(--success);
+      color: var(--white);
+    }
+
+    .status-reject {
+      background-color: var(--danger);
+      color: var(--white);
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <i class="fa-solid fa-ship"></i>
+        <span>贸易提单RWA系统</span>
+      </a>
+
+      <div class="nav-menu">
+        <a href="personal.html">首页</a>
+        <a href="ebl.html">提单数字化</a>
+        <a href="nft.html">资产代币化</a>
+        <a href="finance.html" class="active">融资管理</a>
+        <a href="compliance.html">合规风控</a>
+        <a href="innovation.html">创新场景</a>
+      </div>
+
+     
+    </div>
+  </nav>
+
+  <!-- 页面内容 -->
+  <div class="page-container">
+    <div class="container">
+      <h2 style="margin-bottom: 24px; color: var(--text); font-size: 20px;">
+        融资管理 > 融资申请
+      </h2>
+
+      <div class="card">
+        <h3 style="font-size: 18px; color: var(--text); margin-bottom: 24px;">
+          NFT抵押融资申请
+        </h3>
+        <!-- 新增RwaNftBank合约地址展示模块 -->
+<div style="margin-bottom: 24px; padding: 16px; background-color: var(--blue-light); border-radius: var(--radius);">
+  <h4 style="font-size: 16px; color: var(--blue-primary); margin-bottom: 8px;">
+    <i class="fa-solid fa-landmark" style="margin-right: 8px;"></i> 融资合约地址（RwaNftBank）
+  </h4>
+  <div style="font-family: monospace; font-size: 14px; color: var(--text); background-color: #fff; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+    0x538D2755B5Fb9A4f7c5769bdcf5103E569D6E241
+    <button onclick="copyText(this)" style="background: none; border: none; color: var(--blue-primary); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--blue-light);">
+      复制
+    </button>
+  </div>
+  <div style="font-size: 12px; color: var(--gray-dark); margin-top: 8px;">
+    <i class="fa-solid fa-info-circle"></i> 所有融资操作均通过该链上合约完成，可链上验证
+  </div>
+</div>
+
+        <div class="finance-form">
+          <!-- 左侧：NFT选择 -->
+          <div>
+            <div class="form-group">
+              <label class="form-label required">选择可融资NFT</label>
+              <div class="nft-select-list">
+                <div class="nft-select-item selected" data-id="0x5f8d7a9b8c7d6e5f4a">
+                  <div style="font-weight: 500;">NFT ID：0x5f8d7a9b8c7d6e5f4a</div>
+                  <div style="font-size: 12px; color: var(--gray-dark);">对应提单：BL20250618001 | 货物价值：280万 RMB</div>
+                  <div style="font-size: 12px; color: var(--success);">可融资额度：60%-80%（168万-224万 RMB）</div>
+                </div>
+                <div class="nft-select-item" data-id="0x7e9d8c7b6a5f4e3d2c">
+                  <div style="font-weight: 500;">NFT ID：0x7e9d8c7b6a5f4e3d2c</div>
+                  <div style="font-size: 12px; color: var(--gray-dark);">对应提单：BL20250617002 | 货物价值：150万 RMB</div>
+                  <div style="font-size: 12px; color: var(--success);">可融资额度：60%-80%（90万-120万 RMB）</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="finance-amount">融资金额（RMB）</label>
+              <input type="number" class="form-control" id="finance-amount" placeholder="请输入融资金额" min="1680000" max="2240000" value="2000000">
+              <div class="amount-info">
+                <i class="fa-solid fa-info-circle"></i> 可融资额度范围：168万 - 224万 RMB
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="finance-term">融资期限</label>
+              <select class="form-control" id="finance-term">
+                <option value="30">30天</option>
+                <option value="60">60天</option>
+                <option value="90">90天</option>
+                <option value="custom">自定义</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 右侧：补充信息 -->
+          <div>
+            <div class="form-group">
+              <label class="form-label required" for="finance-party">资金方选择</label>
+              <select class="form-control" id="finance-party">
+                <option value="bank">XX商业银行</option>
+                <option value="invest">XX投资机构</option>
+                <option value="personal">个人投资者</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required" for="finance-account">收款账户</label>
+              <select class="form-control" id="finance-account">
+                <option value="account1">招商银行（尾号8888）- 华东电子科技有限公司</option>
+                <option value="account2">工商银行（尾号6666）- 华东电子科技有限公司</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">补充材料上传</label>
+              <div class="upload-area" style="padding: 20px; margin-top: 8px;">
+                <input type="file" id="finance-files" accept=".pdf,.jpg,.jpeg,.png" multiple style="display: none;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                  <i class="fa-solid fa-paperclip" style="font-size: 24px; color: var(--blue-primary);"></i>
+                  <div>
+                    <div style="font-size: 14px; color: var(--text);">点击上传企业经营证明、贸易合同副本等</div>
+                    <div style="font-size: 12px; color: var(--gray-dark);">支持PDF、JPG、PNG格式，单文件≤10MB</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">条款确认</label>
+              <div class="terms-box">
+                <div><strong>融资利率：</strong>4.8%/年</div>
+                <div><strong>还款方式：</strong>到期一次性还本付息</div>
+                <div><strong>违约条款：</strong>逾期按日收取0.05%违约金，逾期超过15天收回货权</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px;">
+                <input type="checkbox" id="agree-terms" checked>
+                <label for="agree-terms" style="font-size: 14px;">我已阅读并同意上述融资条款</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button class="btn btn-gray" id="save-finance-draft">
+            <i class="fa-solid fa-save"></i> 保存草稿
+          </button>
+          <button class="btn btn-gray" id="reset-finance-form">
+            <i class="fa-solid fa-refresh"></i> 重置表单
+          </button>
+          <button class="btn btn-primary" id="submit-finance">
+            <i class="fa-solid fa-paper-plane"></i> 提交融资申请
+          </button>
+        </div>
+      </div>
+
+      <!-- 融资进度列表 -->
+      <div class="finance-list">
+        <h3 style="font-size: 18px; color: var(--text); margin-bottom: 16px;">
+          融资进度查询
+        </h3>
+        <div class="list-header">
+          <div>申请编号</div>
+          <div>NFT ID</div>
+          <div>融资金额</div>
+          <div>申请时间</div>
+          <div>状态/操作</div>
+        </div>
+        <div class="list-item">
+          <div>FS20250619001</div>
+          <div>0x5f8d7a9b8c7d6e5f4a</div>
+          <div>200万 RMB</div>
+          <div>2025-06-19 10:15</div>
+          <div>
+            <span class="status-tag status-pending">审批中</span>
+            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px; margin-left: 8px;">查看详情</button>
+          </div>
+        </div>
+        <div class="list-item">
+          <div>FS20250618002</div>
+          <div>0x7e9d8c7b6a5f4e3d2c</div>
+          <div>100万 RMB</div>
+          <div>2025-06-18 14:30</div>
+          <div>
+            <span class="status-tag status-success">已放款</span>
+            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px; margin-left: 8px;">还款</button>
+          </div>
+        </div>
+        <div class="list-item">
+          <div>FS20250617003</div>
+          <div>0x9d8c7b6a5f4e3d2c1b</div>
+          <div>80万 RMB</div>
+          <div>2025-06-17 09:45</div>
+          <div>
+            <span class="status-tag status-reject">已拒绝</span>
+            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px; margin-left: 8px;">重新申请</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // NFT选择交互
+    const nftItems = document.querySelectorAll('.nft-select-item');
+    nftItems.forEach(item => {
+      item.addEventListener('click', () => {
+        nftItems.forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        // 更新可融资额度提示
+        const amountInfo = document.querySelector('.amount-info');
+        if (item.dataset.id === '0x5f8d7a9b8c7d6e5f4a') {
+          amountInfo.innerHTML = '<i class="fa-solid fa-info-circle"></i> 可融资额度范围：168万 - 224万 RMB';
+          document.getElementById('finance-amount').setAttribute('min', 1680000);
+          document.getElementById('finance-amount').setAttribute('max', 2240000);
+        } else {
+          amountInfo.innerHTML = '<i class="fa-solid fa-info-circle"></i> 可融资额度范围：90万 - 120万 RMB';
+          document.getElementById('finance-amount').setAttribute('min', 900000);
+          document.getElementById('finance-amount').setAttribute('max', 1200000);
+        }
+      });
+    });
+
+    // 融资金额校验
+    const financeAmount = document.getElementById('finance-amount');
+    financeAmount.addEventListener('input', () => {
+      const min = parseInt(financeAmount.min);
+      const max = parseInt(financeAmount.max);
+      const value = parseInt(financeAmount.value);
+      
+      if (value < min) {
+        financeAmount.setCustomValidity(`融资金额不能低于${min/10000}万 RMB`);
+      } else if (value > max) {
+        financeAmount.setCustomValidity(`融资金额不能高于${max/10000}万 RMB`);
+      } else {
+        financeAmount.setCustomValidity('');
+      }
+    });
+
+    // 补充材料上传
+    const financeFileUpload = document.querySelector('.finance-form .upload-area');
+    const financeFileInput = document.getElementById('finance-files');
+
+    financeFileUpload.addEventListener('click', () => {
+      financeFileInput.click();
+    });
+
+    financeFileInput.addEventListener('change', () => {
+      if (financeFileInput.files.length) {
+        alert(`已选择 ${financeFileInput.files.length} 个补充证明文件`);
+      }
+    });
+
+    // 按钮交互
+    document.getElementById('save-finance-draft').addEventListener('click', () => {
+      alert('融资申请草稿保存成功！');
+    });
+
+    document.getElementById('reset-finance-form').addEventListener('click', () => {
+      document.getElementById('finance-amount').value = '';
+      document.getElementById('finance-term').value = '30';
+      document.getElementById('finance-party').value = 'bank';
+      document.getElementById('finance-account').value = 'account1';
+      document.getElementById('agree-terms').checked = true;
+      financeFileInput.value = '';
+    });
+
+    document.getElementById('submit-finance').addEventListener('click', () => {
+      const agreeTerms = document.getElementById('agree-terms');
+      if (!agreeTerms.checked) {
+        alert('请阅读并同意融资条款');
+        return;
+      }
+
+      if (!financeAmount.value) {
+        alert('请输入融资金额');
+        return;
+      }
+
+      // 模拟提交成功
+      alert('融资申请提交成功！申请编号：FS20250619004');
+      // 刷新列表
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    });
+
+    // 列表操作按钮
+    const listButtons = document.querySelectorAll('.list-item button');
+    listButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.textContent === '查看详情') {
+          alert('融资申请详情：\n申请编号：FS20250619001\nNFT ID：0x5f8d7a9b8c7d6e5f4a\n融资金额：200万 RMB\n审批进度：风控审查中（预计1-3个工作日）');
+        } else if (btn.textContent === '还款') {
+          alert('还款操作：\n融资金额：100万 RMB\n应付利息：4000 RMB\n总计应还：1004000 RMB\n\n跳转至支付页面...');
+        } else if (btn.textContent === '重新申请') {
+          alert('重新申请融资，请修改申请信息后提交');
+          document.getElementById('finance-amount').value = '900000';
+        }
+      });
+    });
+    function copyText(btn) {
+  const address = btn.parentElement.textContent.replace('复制', '').trim();
+  navigator.clipboard.writeText(address);
+  btn.textContent = '已复制';
+  setTimeout(() => btn.textContent = '复制', 1500);
+}
+  </script>
+</body>
+</html>

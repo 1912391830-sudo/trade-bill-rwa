@@ -1,0 +1,376 @@
+<script type="module" src="abi.js"></script>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>贸易提单RWA系统 - 资产代币化</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* 步骤导航 */
+    .steps-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .steps-nav::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--gray);
+      z-index: 1;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      width: 20%;
+    }
+
+    .step-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--white);
+      border: 2px solid var(--gray);
+      color: var(--gray-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      margin-bottom: 8px;
+      transition: var(--transition);
+    }
+
+    .step-item.active .step-dot {
+      background-color: var(--blue-primary);
+      border-color: var(--blue-primary);
+      color: var(--white);
+    }
+
+    .step-item.completed .step-dot {
+      background-color: var(--blue-primary);
+      border-color: var(--blue-primary);
+      color: var(--white);
+    }
+
+    .step-label {
+      font-size: 12px;
+      color: var(--gray-dark);
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .step-item.active .step-label,
+    .step-item.completed .step-label {
+      color: var(--blue-primary);
+      font-weight: 500;
+    }
+
+    /* NFT铸造表单 */
+    .nft-form-group {
+      margin-bottom: 24px;
+    }
+
+    .ebl-select-card {
+      border: 1px solid var(--blue-light);
+      border-radius: var(--radius);
+      padding: 16px;
+      background-color: var(--blue-light);
+      margin-bottom: 16px;
+    }
+
+    .hash-value {
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--text);
+      background-color: var(--gray-light);
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hash-value button {
+      background: none;
+      border: none;
+      color: var(--blue-primary);
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .铸造-progress {
+      margin: 16px 0;
+    }
+
+    .token-id-display {
+      font-family: monospace;
+      font-size: 16px;
+      color: var(--blue-primary);
+      font-weight: 600;
+      margin: 8px 0;
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .steps-nav {
+        flex-wrap: wrap;
+      }
+      .step-item {
+        width: 45%;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <i class="fa-solid fa-ship"></i>
+        <span>贸易提单RWA系统</span>
+      </a>
+
+      <div class="nav-menu">
+        <a href="personal.html">首页</a>
+        <a href="ebl.html">提单数字化</a>
+        <a href="nft.html" class="active">资产代币化</a>
+        <a href="finance.html">融资管理</a>
+        <a href="compliance.html">合规风控</a>
+        <a href="innovation.html">创新场景</a>
+      </div>
+
+     
+    </div>
+  </nav>
+
+  <!-- 页面内容 -->
+  <div class="page-container">
+    <div class="container">
+      <h2 style="margin-bottom: 24px; color: var(--text); font-size: 20px;">
+        资产代币化 > NFT铸造
+      </h2>
+
+      <!-- 步骤导航 -->
+      <div class="steps-nav">
+        <div class="step-item completed">
+          <div class="step-dot">1</div>
+          <div class="step-label">选择eBL</div>
+        </div>
+        <div class="step-item completed">
+          <div class="step-dot">2</div>
+          <div class="step-label">确认存证</div>
+        </div>
+        <div class="step-item active">
+          <div class="step-dot">3</div>
+          <div class="step-label">设置参数</div>
+        </div>
+        <div class="step-item">
+          <div class="step-dot">4</div>
+          <div class="step-label">完成铸造</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <!-- 1. 选择eBL区域 -->
+        <div class="nft-form-group">
+          <h3 style="font-size: 16px; color: var(--text); margin-bottom: 16px;">
+            <i class="fa-solid fa-file-invoice" style="color: var(--blue-primary); margin-right: 8px;"></i>
+            选择合格eBL（仅显示识别准确率≥90%的eBL）
+          </h3>
+          <div class="ebl-select-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div style="font-weight: 500;">提单号：BL20250618001</div>
+              <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;">更换eBL</button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 14px;">
+              <div>货物名称：蓝牙耳机</div>
+              <div>金额：280万 RMB</div>
+              <div>生成时间：2025-06-18 09:45</div>
+              <div>识别准确率：95.2% ✅</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 存证信息确认 -->
+        <div class="nft-form-group">
+          <h3 style="font-size: 16px; color: var(--text); margin-bottom: 16px;">
+            <i class="fa-solid fa-shield-halved" style="color: var(--blue-primary); margin-right: 8px;"></i>
+            存证信息确认
+          </h3>
+          <div style="font-size: 14px; margin-bottom: 8px;">链下存储方式：IPFS</div>
+          <div>
+            <div style="font-size: 14px; color: var(--gray-dark);">原始文件哈希（SHA-256）：</div>
+            <div class="hash-value">
+              0x1f9d87a6b3e4c89d7f2a5b8c9d7e6f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e
+              <button onclick="copyHash(this)">复制</button>
+            </div>
+          </div>
+          <div style="margin-top: 8px;">
+            <div style="font-size: 14px; color: var(--gray-dark);">结构化数据哈希（SHA-256）：</div>
+            <div class="hash-value">
+              0x8e4b9d2f7c1a8b3e9d4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d
+              <button onclick="copyHash(this)">复制</button>
+            </div>
+          </div>
+          <div style="margin-top: 8px; font-size: 14px; color: var(--success);">
+            <i class="fa-solid fa-check-circle"></i> 存证状态：已完成校验
+          </div>
+        </div>
+        <!-- 原有NFT参数设置模块继续 -->
+        <div class="nft-form-group">
+          <h3 style="font-size: 16px; color: var(--text); margin-bottom: 16px;">
+            <i class="fa-solid fa-sliders" style="color: var(--blue-primary); margin-right: 8px;"></i>
+            NFT参数设置
+          </h3>
+        <!-- 3. NFT参数设置 -->
+        <div class="nft-form-group">
+          <h3 style="font-size: 16px; color: var(--text); margin-bottom: 16px;">
+            <i class="fa-solid fa-sliders" style="color: var(--blue-primary); margin-right: 8px;"></i>
+            NFT参数设置
+          </h3>
+          <div class="form-group">
+            <label class="form-label required" for="nft-name">NFT名称</label>
+            <input type="text" class="form-control" id="nft-name" value="提单NFT-BL20250618001" placeholder="请输入NFT名称">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nft-desc">NFT描述（可选）</label>
+            <textarea class="form-control" id="nft-desc" rows="3" placeholder="请输入NFT描述信息">蓝牙耳机贸易提单，货权唯一标识，基于IPFS存证，链上可验证</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nft-files">辅助证明文件（可选）</label>
+            <div class="upload-area" style="padding: 20px; margin-top: 8px;">
+              <input type="file" id="nft-files" accept=".pdf,.jpg,.jpeg,.png" multiple style="display: none;">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <i class="fa-solid fa-paperclip" style="font-size: 24px; color: var(--blue-primary);"></i>
+                <div>
+                  <div style="font-size: 14px; color: var(--text);">点击上传装箱单、发票等辅助证明文件</div>
+                  <div style="font-size: 12px; color: var(--gray-dark);">支持PDF、JPG、PNG格式，单文件≤10MB</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 铸造进度 -->
+        <div class="nft-form-group">
+          <h3 style="font-size: 16px; color: var(--text); margin-bottom: 16px;">
+            <i class="fa-solid fa-spinner" style="color: var(--blue-primary); margin-right: 8px;"></i>
+            铸造进度
+          </h3>
+          <div style="font-size: 14px; margin-bottom: 8px;">
+            铸造流程：存证校验 → 链上哈希上链 → NFT生成
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width: 80%;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-dark);">
+            <div>0%</div>
+            <div>80%</div>
+            <div>100%</div>
+          </div>
+          <div style="margin-top: 16px; display: none;" id="nft-success">
+            <div style="font-size: 14px; color: var(--success); margin-bottom: 8px;">
+              <i class="fa-solid fa-circle-check"></i> NFT铸造成功！
+            </div>
+            <div class="token-id-display">
+              NFT Token ID：0x5f8d7a9b8c7d6e5f4a3b2c1d0e9f8e7d6c5b4a3b2c1d0e9f8e7d6c5b4a3b2c1d
+            </div>
+            <button class="btn btn-outline" style="margin-top: 8px;">
+              <i class="fa-solid fa-external-link"></i> 链上查询
+            </button>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button class="btn btn-gray">
+            <i class="fa-solid fa-arrow-left"></i> 返回修改
+          </button>
+          <button class="btn btn-primary" id="confirm-mint">
+            <i class="fa-solid fa-cubes"></i> 确认铸造NFT
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 复制哈希值
+    function copyHash(btn) {
+      const hashText = btn.parentElement.textContent.trim().replace('复制', '').trim();
+      navigator.clipboard.writeText(hashText).then(() => {
+        btn.textContent = '已复制';
+        setTimeout(() => {
+          btn.textContent = '复制';
+        }, 1500);
+      });
+    }
+
+    // 辅助文件上传
+    const nftFileUpload = document.querySelector('.upload-area');
+    const nftFileInput = document.getElementById('nft-files');
+
+    nftFileUpload.addEventListener('click', () => {
+      nftFileInput.click();
+    });
+
+    nftFileInput.addEventListener('change', () => {
+      if (nftFileInput.files.length) {
+        alert(`已选择 ${nftFileInput.files.length} 个辅助证明文件`);
+      }
+    });
+
+    // 确认铸造
+    document.getElementById('confirm-mint').addEventListener('click', () => {
+      const progressBar = document.querySelector('.progress-bar');
+      let progress = 80;
+      const timer = setInterval(() => {
+        progress += Math.random() * 5;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(timer);
+          document.getElementById('nft-success').style.display = 'block';
+          // 更新步骤导航
+          document.querySelector('.steps-nav .step-item:nth-child(4)').classList.add('active');
+          document.querySelector('.steps-nav .step-item:nth-child(3)').classList.remove('active');
+          document.querySelector('.steps-nav .step-item:nth-child(3)').classList.add('completed');
+        }
+        progressBar.style.width = `${progress}%`;
+      }, 300);
+
+      // 铸造成功后添加跳转按钮
+      setTimeout(() => {
+        const actionBtns = document.querySelector('.card > div:last-child');
+        const financeBtn = document.createElement('button');
+        financeBtn.className = 'btn btn-outline';
+        financeBtn.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> 前往融资申请';
+        financeBtn.style.marginLeft = '12px';
+        financeBtn.addEventListener('click', () => {
+          window.location.href = 'finance.html';
+        });
+        actionBtns.appendChild(financeBtn);
+      }, 2000);
+    });
+     // 新增：复制合约地址的函数（直接粘贴这一段）
+    function copyText(btn) {
+      const address = btn.parentElement.textContent.replace('复制', '').trim();
+      navigator.clipboard.writeText(address);
+      btn.textContent = '已复制';
+      setTimeout(() => btn.textContent = '复制', 1500);
+    }
+  </script>
+</body>
+</html>

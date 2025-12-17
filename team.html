@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeWeb - 团队介绍</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* 顶部导航（同首页） */
+    .top-nav {
+      background: #e0e5ec;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav .logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      font-size: 16px;
+      color: #333;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .login-btn {
+      padding: 8px 16px;
+      background: #87CEEB;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    /* 团队轮播 */
+    .team-section {
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .team-title {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 40px;
+      color: #333;
+    }
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .carousel-wrapper {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+    .team-card {
+      min-width: 100%;
+      padding: 30px;
+      text-align: center;
+      background: #fff;
+    }
+    .member-avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      background: #87CEEB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 60px;
+    }
+    .member-name {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .member-role {
+      color: #666;
+      margin-bottom: 15px;
+    }
+    .member-desc {
+      color: #888;
+      line-height: 1.6;
+    }
+    /* 轮播按钮 */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.8);
+      color: #87CEEB;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="top-nav">
+    <div class="logo">TradeWeb</div>
+    <div class="nav-links">
+      <a href="new-index.html">首页</a>
+      <a href="team.html" style="color: #87CEEB;">团队介绍</a>
+    </div>
+    <button class="login-btn" onclick="window.location.href='login.html'">登陆</button>
+  </div>
+
+  <!-- 团队轮播区域 -->
+  <div class="team-section">
+    <h2 class="team-title">我们的团队</h2>
+    <div class="carousel-container">
+      <div class="carousel-wrapper" id="carouselWrapper">
+        <!-- 成员1 -->
+        <div class="team-card">
+          <div class="member-avatar"><<i class="fa-solid fa-user"></</i></div>
+          <div class="member-name">张三</div>
+          
+        </div>
+        <!-- 成员2 -->
+        <div class="team-card">
+          <div class="member-avatar"><<i class="fa-solid fa-user"></</i></div>
+          <div class="member-name">李四</div>
+         
+        <!-- 成员3 -->
+        <div class="team-card">
+          <div class="member-avatar"><<i class="fa-solid fa-user"></</i></div>
+          <div class="member-name">王五</div>
+          
+        <!-- 成员4 -->
+        <div class="team-card">
+          <div class="member-avatar"><<i class="fa-solid fa-user"></</i></div>
+          <div class="member-name">尤书航</div>
+        </div>
+      </div>
+      <button class="carousel-btn prev-btn" id="prevBtn"><<i class="fa-solid fa-chevron-left"></</i></button>
+      <button class="carousel-btn next-btn" id="nextBtn"><<i class="fa-solid fa-chevron-right"></</i></button>
+    </div>
+  </div>
+
+  <script>
+    // 轮播逻辑
+    const carouselWrapper = document.getElementById('carouselWrapper');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentIndex = 0;
+    const cardCount = document.querySelectorAll('.team-card').length;
+
+    // 切换轮播
+    function goToSlide(index) {
+      carouselWrapper.style.transform = `translateX(-${index * 100}%)`;
+      currentIndex = index;
+    }
+
+    // 下一张
+    nextBtn.addEventListener('click', () => {
+      const nextIndex = (currentIndex + 1) % cardCount;
+      goToSlide(nextIndex);
+    });
+
+    // 上一张
+    prevBtn.addEventListener('click', () => {
+      const prevIndex = (currentIndex - 1 + cardCount) % cardCount;
+      goToSlide(prevIndex);
+    });
+
+    // 自动轮播（可选）
+    setInterval(() => {
+      const nextIndex = (currentIndex + 1) % cardCount;
+      goToSlide(nextIndex);
+    }, 3000);
+  </script>
+</body>
+</html>

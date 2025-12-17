@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>贸易提单RWA系统 - 创新场景</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* 场景卡片 */
+    .scene-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .scene-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scene-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px var(--shadow);
+    }
+
+    .scene-header {
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-dark));
+      color: var(--white);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .scene-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
+    .scene-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .scene-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .scene-desc {
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .scene-features {
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .scene-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .scene-feature i {
+      color: var(--blue-primary);
+      margin-top: 4px;
+    }
+
+    .scene-action {
+      margin-top: auto;
+      text-align: center;
+    }
+
+    /* 案例展示 */
+    .case-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--gray);
+      padding-bottom: 8px;
+    }
+
+    .case-tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .case-tab.active {
+      background-color: var(--blue-primary);
+      color: var(--white);
+    }
+
+    .case-content {
+      display: none;
+    }
+
+    .case-content.active {
+      display: block;
+    }
+
+    .case-item {
+      display: flex;
+      gap: 20px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray);
+      flex-wrap: wrap;
+    }
+
+    .case-item:last-child {
+      border-bottom: none;
+    }
+
+    .case-img {
+      width: 120px;
+      height: 80px;
+      background-color: var(--blue-light);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue-primary);
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .case-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .case-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .case-desc {
+      font-size: 14px;
+      color: var(--gray-dark);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .case-metrics {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--blue-primary);
+    }
+
+    /* 数据可视化 */
+    .chart-container {
+      height: 300px;
+      background-color: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .chart-placeholder {
+      text-align: center;
+      color: var(--gray-dark);
+    }
+
+    .chart-placeholder i {
+      font-size: 64px;
+      margin-bottom: 16px;
+      color: var(--blue-light);
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <i class="fa-solid fa-ship"></i>
+        <span>贸易提单RWA系统</span>
+      </a>
+
+      <div class="nav-menu">
+        <a href="personal.html">首页</a>
+        <a href="ebl.html">提单数字化</a>
+        <a href="nft.html">资产代币化</a>
+        <a href="finance.html">融资管理</a>
+        <a href="compliance.html">合规风控</a>
+        <a href="innovation.html" class="active">创新场景</a>
+      </div>
+
+      
+    </div>
+  </nav>
+
+  <!-- 页面内容 -->
+  <div class="page-container">
+    <div class="container">
+      <h2 style="margin-bottom: 24px; color: var(--text); font-size: 20px;">
+        创新场景 > 贸易金融新范式
+      </h2>
+
+      <!-- 场景卡片 -->
+      <div class="scene-cards">
+        <!-- 跨境结算场景 -->
+        <div class="card scene-card">
+          <div class="scene-header">
+            <div class="scene-icon">
+              <i class="fa-solid fa-globe"></i>
+            </div>
+            <div class="scene-title">跨境结算</div>
+          </div>
+          <div class="scene-body">
+            <div class="scene-desc">
+              基于区块链的提单NFT化跨境结算方案，实现货权与资金的同步交割，解决传统跨境结算中的信任问题和时效问题。
+            </div>
+            <div class="scene-features">
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>去中心化验证，无需第三方担保</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>结算时效从7-15天缩短至T+1</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>降低汇兑成本，费率减少30%-50%</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>全流程可追溯，满足跨境合规要求</div>
+              </div>
+            </div>
+            <div class="scene-action">
+              <button class="btn btn-primary">
+                <i class="fa-solid fa-arrow-right"></i> 了解详情
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 供应链金融场景 -->
+        <div class="card scene-card">
+          <div class="scene-header">
+            <div class="scene-icon">
+              <i class="fa-solid fa-link"></i>
+            </div>
+            <div class="scene-title">供应链金融</div>
+          </div>
+          <div class="scene-body">
+            <div class="scene-desc">
+              以提单NFT为核心资产的供应链金融解决方案，为中小微企业提供无抵押融资渠道，盘活应收账款。
+            </div>
+            <div class="scene-features">
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>多级供应商穿透式融资，覆盖全链条</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>融资门槛降低，无需传统抵押担保</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>资金到账时效提升至24小时内</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>动态风控，实时监控货权流转状态</div>
+              </div>
+            </div>
+            <div class="scene-action">
+              <button class="btn btn-primary">
+                <i class="fa-solid fa-arrow-right"></i> 了解详情
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 数字货权流转场景 -->
+        <div class="card scene-card">
+          <div class="scene-header">
+            <div class="scene-icon">
+              <i class="fa-solid fa-right-left"></i>
+            </div>
+            <div class="scene-title">数字货权流转</div>
+          </div>
+          <div class="scene-body">
+            <div class="scene-desc">
+              提单NFT化实现货权的数字化拆分与流转，支持多主体共同持有、分次提货，提升货物周转效率。
+            </div>
+            <div class="scene-features">
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>货权拆分粒度精准至最小提货单位</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>链上流转，实时更新货权持有状态</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>支持货权质押、转让、拆分等操作</div>
+              </div>
+              <div class="scene-feature">
+                <i class="fa-solid fa-check"></i>
+                <div>智能合约自动执行提货/交割规则</div>
+              </div>
+            </div>
+            <div class="scene-action">
+              <button class="btn btn-primary">
+                <i class="fa-solid fa-arrow-right"></i> 了解详情
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 数据可视化 -->
+      <div class="card chart-container">
+        <div class="chart-placeholder">
+          <i class="fa-solid fa-chart-line"></i>
+          <div>创新场景业务增长趋势（2025）</div>
+          <div style="font-size: 12px; margin-top: 8px; color: var(--gray-dark);">
+            跨境结算：月均增长28% | 供应链金融：月均增长35% | 数字货权：月均增长42%
+          </div>
+        </div>
+      </div>
+
+      <!-- 成功案例 -->
+      <div class="card">
+        <h3 style="font-size: 18px; color: var(--text); margin-bottom: 16px;">
+          <i class="fa-solid fa-award" style="color: var(--blue-primary); margin-right: 8px;"></i>
+          成功案例
+        </h3>
+
+        <div class="case-tabs">
+          <div class="case-tab active" data-tab="cross-border">跨境结算案例</div>
+          <div class="case-tab" data-tab="supply-chain">供应链金融案例</div>
+          <div class="case-tab" data-tab="rights-flow">货权流转案例</div>
+        </div>
+
+        <!-- 跨境结算案例 -->
+        <div class="case-content active" id="cross-border">
+          <div class="case-item">
+            <div class="case-img">
+              <i class="fa-solid fa-ship"></i>
+            </div>
+            <div class="case-info">
+              <div class="case-title">华东电子 × 马来西亚XX科技 跨境结算项目</div>
+              <div class="case-desc">
+                双方通过提单NFT化实现跨境结算，提单号BL20250618001对应蓝牙耳机贸易，结算金额280万RMB，
+                传统结算需10天，通过本系统实现T+1到账，汇兑成本降低40%。
+              </div>
+              <div class="case-metrics">
+                <div>结算时效提升：90%</div>
+                <div>成本降低：40%</div>
+                <div>合规通过率：100%</div>
+              </div>
+            </div>
+          </div>
+          <div class="case-item">
+            <div class="case-img">
+              <i class="fa-solid fa-boxes-packing"></i>
+            </div>
+            <div class="case-info">
+              <div class="case-title">华南制造 × 欧盟经销商 跨境结算项目</div>
+              <div class="case-desc">
+                针对电子产品出口欧盟的跨境结算需求，通过NFT提单实现货权与资金同步交割，
+                解决了欧盟海关合规审查复杂、结算周期长的问题，单月完成5笔跨境结算，总额1200万RMB。
+              </div>
+              <div class="case-metrics">
+                <div>结算时效提升：85%</div>
+                <div>成本降低：35%</div>
+                <div>客户满意度：98%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 供应链金融案例 -->
+        <div class="case-content" id="supply-chain">
+          <div class="case-item">
+            <div class="case-img">
+              <i class="fa-solid fa-handshake-angle"></i>
+            </div>
+            <div class="case-info">
+              <div class="case-title">中小供应商供应链融资项目</div>
+              <div class="case-desc">
+                为某电子制造产业链的12家中小供应商提供基于NFT提单的供应链融资服务，
+                累计融资金额3500万RMB，融资门槛降低60%，资金到账时效从7天缩短至1天。
+              </div>
+              <div class="case-metrics">
+                <div>融资门槛降低：60%</div>
+                <div>到账时效提升：85%</div>
+                <div>坏账率：0%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 货权流转案例 -->
+        <div class="case-content" id="rights-flow">
+          <div class="case-item">
+            <div class="case-img">
+              <i class="fa-solid fa-cubes-stacked"></i>
+            </div>
+            <div class="case-info">
+              <div class="case-title">大宗商品货权拆分流转项目</div>
+              <div class="case-desc">
+                针对铁矿石进口贸易的货权流转需求，将提单NFT拆分为10个货权单位，
+                支持不同买家分次提货，货物周转效率提升50%，资金占用成本降低30%。
+              </div>
+              <div class="case-metrics">
+                <div>周转效率提升：50%</div>
+                <div>资金成本降低：30%</div>
+                <div>提货效率提升：70%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 场景卡片详情按钮
+    const sceneDetailBtns = document.querySelectorAll('.scene-action .btn');
+    sceneDetailBtns.forEach((btn, index) => {
+      const sceneTitles = ['跨境结算', '供应链金融', '数字货权流转'];
+      btn.addEventListener('click', () => {
+        alert(`${sceneTitles[index]}场景详情：\n\n1. 适用对象：${index === 0 ? '进出口贸易企业' : index === 1 ? '供应链上下游企业' : '大宗商品贸易企业'}\n2. 核心价值：${index === 0 ? '降本增效、合规透明' : index === 1 ? '盘活资产、降低门槛' : '灵活流转、提升效率'}\n3. 接入流程：提交申请 → 系统对接 → 测试上线 → 正式运行`);
+      });
+    });
+
+    // 案例标签切换
+    const caseTabs = document.querySelectorAll('.case-tab');
+    const caseContents = document.querySelectorAll('.case-content');
+
+    caseTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // 切换标签激活状态
+        caseTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // 切换内容显示
+        const tabId = tab.dataset.tab;
+        caseContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === tabId) {
+            content.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // 模拟图表交互（点击图表区域）
+    const chartContainer = document.querySelector('.chart-container');
+    chartContainer.addEventListener('click', () => {
+      alert('创新场景业务数据详情：\n\n2025年1-6月数据\n跨境结算：累计交易额 1.2亿 RMB\n供应链金融：累计融资金额 2.8亿 RMB\n数字货权流转：累计货权拆分 56笔\n\n同比增长：180%');
+    });
+  </script>
+</body>
+</html>

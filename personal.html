@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人中心 - 贸易提单RWA系统</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    /* 统一导航栏（和首页/登录页风格一致） */
+    .top-nav {
+      background: #e0e5ec;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav .logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      font-size: 16px;
+      color: #333;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .nav-links a.active {
+      color: #87CEEB;
+      font-weight: 600;
+    }
+    .logout-btn {
+      padding: 8px 16px;
+      background: #87CEEB;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    /* 个人中心主体 */
+    .personal-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .user-info {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #87CEEB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 30px;
+    }
+    .user-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+    .user-role {
+      color: #666;
+      margin-top: 5px;
+    }
+
+    /* 功能入口卡片 */
+    .function-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .func-card {
+      background: #fff;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .func-card:hover {
+      transform: translateY(-5px);
+    }
+    .func-icon {
+      font-size: 40px;
+      color: #87CEEB;
+      margin-bottom: 15px;
+    }
+    .func-name {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .func-desc {
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航（保留首页入口，指向原首页） -->
+  <div class="top-nav">
+    <div class="logo">TradeWeb</div>
+    <div class="nav-links">
+      <a href="personal.html">首页</a> <!-- 指向原首页 -->
+      <a href="personal.html" class="active">个人中心</a>
+      <a href="team.html">团队介绍</a>
+    </div>
+    <button class="logout-btn" onclick="window.location.href='login.html'">退出登录</button>
+  </div>
+
+  <!-- 个人中心主体 -->
+  <div class="personal-container">
+    <!-- 用户信息 -->
+    <div class="user-info">
+      <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+      <div>
+        <div class="user-name">用户名</div>
+        <div class="user-role">角色：发货人</div>
+      </div>
+    </div>
+
+    <!-- 功能入口（核心：提单数字化） -->
+    <div class="function-cards">
+      <div class="func-card" onclick="window.location.href='ebl.html'">
+        <div class="func-icon"><i class="fa-solid fa-file-invoice"></i></div>
+        <div class="func-name">数字提单化</div>
+        <div class="func-desc">提单信息录入、数字化存证</div>
+      </div>
+      <div class="func-card" onclick="window.location.href='nft.html'">
+        <div class="func-icon"><i class="fa-solid fa-cubes"></i></div>
+        <div class="func-name">NFT铸造</div>
+        <div class="func-desc">将数字化提单铸造成NFT</div>
+      </div>
+      <div class="func-card" onclick="window.location.href='finance.html'">
+        <div class="func-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+        <div class="func-name">融资管理</div>
+        <div class="func-desc">NFT抵押融资申请与管理</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
