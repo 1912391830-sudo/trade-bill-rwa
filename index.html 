@@ -6,21 +6,25 @@
   <title>TradeWeb - 贸易提单RWA数字化平台</title>
   <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* 全局重置 */
+    /* 全局重置 - 移除默认边框/填充 */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: "Microsoft Yahei", sans-serif;
+      border: none !important; /* 全局移除边框 */
+      outline: none !important;
     }
     body {
-      background: #285dab;
-      color: #cdc6eb;
+      /* 主背景：低饱和灰蓝 → 深蓝渐变（无填充） */
+      background: linear-gradient(120deg, #2c3e50 0%, #1a2530 100%);
+      color: #ffffff; /* 全局字体白色 */
     }
 
-    /* 顶部导航栏 - 核心导航区域 */
+    /* 顶部导航栏 - 更深的蓝灰色，无填充/边框 */
     .top-nav {
-      box-shadow: 0 2px 10px rgba(237, 234, 240, 0.927);
+      background: #141e29; /* 深灰蓝色（比主背景更深） */
+      box-shadow: none; /* 移除阴影（原边框类视觉元素） */
       padding: 0 50px;
       height: 70px;
       display: flex;
@@ -32,115 +36,123 @@
       right: 0;
       z-index: 999;
     }
-    /* 平台Logo */
+    /* 平台Logo - 白色字体，无填充 */
     .logo {
       display: flex;
       align-items: center;
       gap: 10px;
+      padding: 0; /* 移除填充 */
     }
     .logo-icon {
       font-size: 24px;
-      color: #2c4666;
+      color: #ffffff; /* 图标白色 */
     }
     .logo-text {
       font-size: 20px;
       font-weight: 600;
-      color: #c7d8e9;
+      color: #ffffff; /* Logo文字白色 */
     }
-    /* 导航菜单 */
+    /* 导航菜单 - 白色字体，无填充/边框 */
     .nav-menu {
       display: flex;
       gap: 40px;
+      padding: 0; /* 移除填充 */
     }
     .nav-item {
       position: relative;
       text-decoration: none;
-      color: #555;
+      color: #ffffff; /* 导航文字白色 */
       font-size: 16px;
       font-weight: 500;
-      padding: 0 5px;
+      padding: 0 5px; /* 仅保留少量内边距（无填充感） */
       transition: color 0.3s ease;
     }
     .nav-item:hover {
-      color: #4096ff;
+      color: #e0e6ed; /* hover时浅白（无边框高亮） */
     }
     .nav-item.active {
-      color: #4096ff;
+      color: #ffffff;
     }
     .nav-item.active::after {
+      /* 移除底部边框高亮，改为文字加粗 */
       content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-      height: 3px;
-      background: #4096ff;
-      border-radius: 3px;
+      display: none; /* 彻底移除原边框样式 */
     }
-    /* 登录按钮 */
+    .nav-item.active {
+      font-weight: 700; /* 激活项加粗替代边框 */
+    }
+    /* 登录按钮 - 蓝灰色适配，无边框/填充 */
     .login-btn {
       padding: 8px 20px;
-      background: #4096ff;
-      color: #ffffff;
-      border: none;
+      background: #1f3041; /* 按钮蓝灰色（与导航栏呼应） */
+      color: #ffffff; /* 按钮文字白色 */
       border-radius: 4px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: background 0.3s ease;
+      padding: 0; /* 移除填充，仅保留内边距 */
+      width: 120px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .login-btn:hover {
-      background: #3088ff;
+      background: #273b4e; /* hover时稍浅的蓝灰色 */
     }
 
-    /* 主体视觉区域 */
+    /* 主体视觉区域 - 无填充/边框，白色字体 */
     .hero-section {
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(120deg, #e8f4f8 0%, #f0f8fb 100%);
+      background: transparent; /* 继承body渐变背景，无额外填充 */
       margin-top: 70px;
       padding: 0 50px;
       text-align: center;
     }
     .hero-content {
       max-width: 800px;
+      padding: 0; /* 移除填充 */
     }
     .hero-title {
       font-size: 48px;
-      color: #b5cbe1;
+      color: #ffffff; /* 标题白色 */
       margin-bottom: 20px;
       line-height: 1.3;
     }
     .hero-title span {
-      color: #4096ff;
+      color: #e0e6ed; /* 高亮文字浅白（无色彩对比，保持统一） */
     }
     .hero-desc {
       font-size: 18px;
-      color: #d5d2e6;
+      color: #ffffff; /* 描述文字白色 */
       line-height: 1.6;
       margin-bottom: 40px;
     }
     .start-btn {
       padding: 15px 40px;
-      background: #4096ff;
-      color: #ffffff;
-      border: none;
+      background: #1f3041; /* 按钮与导航栏同色系蓝灰 */
+      color: #ffffff; /* 按钮文字白色 */
       border-radius: 8px;
       font-size: 18px;
       font-weight: 500;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(182, 191, 202, 0.267);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: none; /* 移除阴影（原边框类视觉） */
+      transition: background 0.3s ease;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 40px; /* 移除填充，用内边距控制大小 */
     }
     .start-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(64, 150, 255, 0.4);
+      background: #273b4e; /* hover时稍浅 */
     }
 
-    /* 响应式适配 - 移动端友好 */
+    /* 响应式适配 - 移动端保持风格统一 */
     @media (max-width: 768px) {
       .top-nav {
         padding: 0 20px;
@@ -161,22 +173,23 @@
         font-size: 16px;
       }
       .start-btn {
-        padding: 12px 30px;
+        height: 50px;
+        padding: 0 30px;
         font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- 顶部导航栏 - 核心导航入口 -->
+  <!-- 顶部导航栏 - 深灰蓝色，无填充/边框 -->
   <div class="top-nav">
-    <!-- 平台Logo -->
+    <!-- 平台Logo - 白色 -->
     <div class="logo">
       <i class="fa-solid fa-file-invoice logo-icon"></i>
       <div class="logo-text">TradeWeb</div>
     </div>
     
-    <!-- 核心导航菜单 -->
+    <!-- 核心导航菜单 - 白色字体 -->
     <div class="nav-menu">
       <a href="index.html" class="nav-item active">首页</a>
       <a href="bill.html" class="nav-item">数字提单化</a>
@@ -186,11 +199,11 @@
       <a href="team.html" class="nav-item">团队介绍</a>
     </div>
     
-    <!-- 登录按钮 -->
+    <!-- 登录按钮 - 蓝灰色，白色文字 -->
     <button class="login-btn" onclick="window.location.href='login.html'">登录/注册</button>
   </div>
 
-  <!-- 主体视觉区域 - 美观展示 -->
+  <!-- 主体视觉区域 - 渐变背景，白色字体，无填充 -->
   <div class="hero-section">
     <div class="hero-content">
       <h1 class="hero-title">贸易提单<span>RWA数字化</span>解决方案</h1>
